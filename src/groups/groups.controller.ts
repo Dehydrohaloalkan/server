@@ -7,17 +7,17 @@ export class GroupsController {
     constructor(private groupsService: GroupsService) {}
 
     @Get()
-    async getAllGroups() {
+    async getAll() {
         return await this.groupsService.getAllGroups();
     }
 
     @Post()
-    async createGroup(@Body() data: Prisma.groupCreateInput) {
+    async create(@Body() data: Prisma.groupCreateInput) {
         return await this.groupsService.createGroup(data);
     }
 
     @Patch()
-    async updateGroup(
+    async update(
         @Body()
         params: {
             where: Prisma.groupWhereUniqueInput;
@@ -28,7 +28,7 @@ export class GroupsController {
     }
 
     @Delete()
-    async deleteGroup(@Body() where: Prisma.groupWhereUniqueInput) {
+    async delete(@Body() where: Prisma.groupWhereUniqueInput) {
         return await this.groupsService.deleteGroup(where);
     }
 }

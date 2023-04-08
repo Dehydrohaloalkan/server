@@ -8,14 +8,14 @@ datasource db {
 }
 
 model course {
-  c_id         Int       @id(map: "PK_course") @default(autoincrement())
-  c_name       String    @db.NChar(20)
-  c_start_date DateTime  @db.Date
-  c_end_date   DateTime  @db.Date
-  c_form       Int       @db.TinyInt
-  subject      subject[]
+  id         Int       @id(map: "PK_course") @default(autoincrement()) @map("c_id")
+  name       String    @map("c_name") @db.NChar(20)
+  start_date DateTime  @map("c_start_date") @db.Date
+  end_date   DateTime  @map("c_end_date") @db.Date
+  form       Int       @map("c_form") @db.TinyInt
+  subjects   subject[]
 
-  @@index([c_name], map: "IX_course_name")
+  @@index([name], map: "IX_course_name")
 }
 
 model group {
@@ -29,86 +29,88 @@ model group {
 }
 
 model lesson {
-  l_id                   String                   @id(map: "PK_lesson") @db.UniqueIdentifier
-  l_start_time           DateTime                 @db.DateTime
-  l_end_time             DateTime                 @db.DateTime
-  l_subject_id           Int
-  l_location             String                   @db.NChar(30)
-  l_teacher_id           String                   @db.UniqueIdentifier
-  subject                subject                  @relation(fields: [l_subject_id], references: [s_id], onUpdate: NoAction, map: "FK_lesson_subject")
-  user                   user                     @relation(fields: [l_teacher_id], references: [u_id], onUpdate: NoAction, map: "FK_lesson_user")
-  lesson_student_absence lesson_student_absence[]
-  lesson_student_grade   lesson_student_grade[]
+  id         String    @id(map: "PK_lesson") @map("c_id") @db.UniqueIdentifier
+  start_time DateTime  @map("c_start_time") @db.DateTime
+  end_time   DateTime  @map("c_end_time") @db.DateTime
+  subject_id Int       @map("c_subject_id")
+  location   String    @map("c_location") @db.NChar(30)
+  teacher_id String    @map("c_teacher_id") @db.UniqueIdentifier
+  subject    subject   @relation(fields: [subject_id], references: [id], onUpdate: NoAction, map: "FK_lesson_subject")
+  teacher    user      @relation(fields: [teacher_id], references: [id], onUpdate: NoAction, map: "FK_lesson_user")
+  absences   absence[]
+  grades     grade[]
 
-  @@index([l_start_time, l_end_time], map: "IX_lesson_start_time_end_time")
-  @@index([l_subject_id], map: "IX_lesson_subject_id")
+  @@index([start_time, end_time], map: "IX_lesson_start_time_end_time")
+  @@index([subject_id], map: "IX_lesson_subject_id")
 }
 
-model lesson_student_absence {
-  lsa_student_id String  @db.UniqueIdentifier
-  lsa_lesson_id  String  @db.UniqueIdentifier
-  lsa_hours      Int     @db.TinyInt
-  lesson         lesson  @relation(fields: [lsa_lesson_id], references: [l_id], onUpdate: NoAction, map: "FK_lesson_student_absence_lesson")
-  student        student @relation(fields: [lsa_student_id], references: [s_id], onUpdate: NoAction, map: "FK_lesson_student_absence_student")
+model absence {
+  student_id String  @map("lsa_student_id") @db.UniqueIdentifier
+  lesson_id  String  @map("lsa_lesson_id") @db.UniqueIdentifier
+  hours      Int     @map("lsa_hours") @db.TinyInt
+  lesson     lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_absence_lesson")
+  student    student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_absence_student")
 
-  @@id([lsa_student_id, lsa_lesson_id], map: "PK_lesson_student_absence")
+  @@id([student_id, lesson_id], map: "PK_lesson_student_absence")
+  @@map("lesson_student_absence")
 }
 
-model lesson_student_grade {
-  lsg_student_id  String  @db.UniqueIdentifier
-  lsg_lesson_id   String  @db.UniqueIdentifier
-  lsg_grade_value Int     @db.TinyInt
-  lesson          lesson  @relation(fields: [lsg_lesson_id], references: [l_id], onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
-  student         student @relation(fields: [lsg_student_id], references: [s_id], onUpdate: NoAction, map: "FK_lesson_student_grade_student")
+model grade {
+  student_id  String  @map("lsg_student_id") @db.UniqueIdentifier
+  lesson_id   String  @map("lsg_lesson_id") @db.UniqueIdentifier
+  grade_value Int     @map("lsg_grade_value") @db.TinyInt
+  lesson      lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
+  student     student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_student")
 
-  @@id([lsg_student_id, lsg_lesson_id], map: "PK_lesson_student_grade")
+  @@id([student_id, lesson_id], map: "PK_lesson_student_grade")
+  @@map("lesson_student_grade")
 }
 
 model student {
-  s_id                   String                   @id(map: "PK_student") @db.UniqueIdentifier
-  s_user_id              String                   @db.UniqueIdentifier
-  s_group_id             Int
-  s_is_group_leader      Boolean
-  s_is_marking           Boolean
-  s_subgroup             Boolean
-  lesson_student_absence lesson_student_absence[]
-  lesson_student_grade   lesson_student_grade[]
-  group                  group                    @relation(fields: [s_group_id], references: [id], onUpdate: NoAction, map: "FK_student_group")
-  user                   user                     @relation(fields: [s_user_id], references: [u_id], onUpdate: NoAction, map: "FK_student_user")
+  id              String    @id(map: "PK_student") @map("s_id") @db.UniqueIdentifier
+  user_id         String    @map("s_user_id") @db.UniqueIdentifier
+  group_id        Int       @map("s_group_id")
+  is_group_leader Boolean   @map("s_is_group_leader")
+  is_marking      Boolean   @map("s_is_marking")
+  subgroup        Boolean   @map("s_subgroup")
+  absences        absence[]
+  grades          grade[]
+  group           group     @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "FK_student_group")
+  user            user      @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "FK_student_user")
 
-  @@index([s_group_id], map: "IX_student_group")
-  @@index([s_user_id], map: "IX_student_user_id")
+  @@index([group_id], map: "IX_student_group")
+  @@index([user_id], map: "IX_student_user_id")
 }
 
 model subject {
-  s_id              Int             @id(map: "PK_subject") @default(autoincrement())
-  s_course_id       Int
-  s_recurrense_json String          @db.NVarChar(Max)
-  s_teacher_id      String          @db.UniqueIdentifier
-  s_type            Int             @db.TinyInt
-  lesson            lesson[]
-  course            course          @relation(fields: [s_course_id], references: [c_id], onUpdate: NoAction, map: "FK_subject_course")
-  subject_type      subject_type    @relation(fields: [s_type], references: [st_id], onUpdate: NoAction, map: "FK_subject_subject_type")
-  user              user            @relation(fields: [s_teacher_id], references: [u_id], onUpdate: NoAction, map: "FK_subject_user")
-  subject_group     subject_group[]
+  id              Int             @id(map: "PK_subject") @default(autoincrement()) @map("s_id")
+  course_id       Int             @map("s_course_id")
+  recurrense_json String          @map("s_recurrense_json") @db.NVarChar(Max)
+  teacher_id      String          @map("s_teacher_id") @db.UniqueIdentifier
+  type            Int             @map("s_type") @db.TinyInt
+  lessons         lesson[]
+  course          course          @relation(fields: [course_id], references: [id], onUpdate: NoAction, map: "FK_subject_course")
+  subject_type    subject_type    @relation(fields: [type], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
+  teacher         user            @relation(fields: [teacher_id], references: [id], onUpdate: NoAction, map: "FK_subject_user")
+  subject_groups  subject_group[]
 
-  @@index([s_course_id], map: "IX_subject_course_id")
+  @@index([course_id], map: "IX_subject_course_id")
 }
 
 model subject_group {
-  sg_subject_id      Int
-  sg_group_id        Int
-  sg_subgroup_number Boolean?
-  group              group    @relation(fields: [sg_group_id], references: [id], onUpdate: NoAction, map: "FK_course_group_group")
-  subject            subject  @relation(fields: [sg_subject_id], references: [s_id], onUpdate: NoAction, map: "FK_subject_group_subject")
+  subject_id      Int      @map("sg_subject_id")
+  group_id        Int      @map("sg_group_id")
+  subgroup_number Boolean? @map("sg_subgroup_number")
+  group           group    @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "FK_course_group_group")
+  subject         subject  @relation(fields: [subject_id], references: [id], onUpdate: NoAction, map: "FK_subject_group_subject")
 
-  @@id([sg_subject_id, sg_group_id], map: "PK_course_group")
+  @@id([subject_id, group_id], map: "PK_course_group")
 }
 
 model subject_type {
-  st_id   Int       @id(map: "PK_course_type") @default(autoincrement()) @db.TinyInt
-  st_name String    @db.NChar(20)
-  subject subject[]
+  id       Int       @id(map: "PK_course_type") @default(autoincrement()) @map("st_id") @db.TinyInt
+  name     String    @map("st_name") @db.NChar(20)
+  subjects subject[]
 }
 
 model sysdiagrams {
@@ -122,23 +124,23 @@ model sysdiagrams {
 }
 
 model user {
-  u_id         String    @id(map: "PK_user") @db.UniqueIdentifier
-  u_name       String    @db.NChar(100)
-  u_email      String    @db.NChar(50)
-  u_password   String?   @db.NChar(50)
-  u_role_id    Int       @db.TinyInt
-  u_surname    String    @db.NChar(50)
-  u_patronymic String?   @db.NChar(50)
-  lesson       lesson[]
-  student      student[]
-  subject      subject[]
-  user_role    user_role @relation(fields: [u_role_id], references: [ur_id], onUpdate: NoAction, map: "FK_user_user_role")
+  id         String    @id(map: "PK_user") @map("u_id") @db.UniqueIdentifier
+  name       String    @map("u_name") @db.NChar(100)
+  email      String    @map("u_email") @db.NChar(50)
+  password   String?   @map("u_password") @db.NChar(50)
+  role_id    Int       @map("u_role_id") @db.TinyInt
+  surname    String    @map("u_surname") @db.NChar(50)
+  patronymic String?   @map("u_patronymic") @db.NChar(50)
+  lessons    lesson[]
+  student    student[]
+  subjects   subject[]
+  user_role  user_role @relation(fields: [role_id], references: [id], onUpdate: NoAction, map: "FK_user_user_role")
 
-  @@index([u_surname, u_name], map: "IX_user_surname_name")
+  @@index([surname, name], map: "IX_user_surname_name")
 }
 
 model user_role {
-  ur_id   Int    @id(map: "PK_user_role") @default(autoincrement()) @db.TinyInt
-  ur_name String @db.NChar(20)
-  user    user[]
+  id    Int    @id(map: "PK_user_role") @default(autoincrement()) @map("ur_id") @db.TinyInt
+  name  String @map("ur_name") @db.NChar(20)
+  users user[]
 }
