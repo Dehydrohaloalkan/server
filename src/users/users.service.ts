@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from './../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -14,10 +14,7 @@ export class UsersService {
         return this.prisma.user.create({ data });
     }
 
-    async updateUser(params: {
-        where: Prisma.userWhereUniqueInput;
-        data: Prisma.userUpdateInput;
-    }) {
+    async updateUser(params: { where: Prisma.userWhereUniqueInput; data: Prisma.userUpdateInput }) {
         const { where, data } = params;
         return this.prisma.user.update({
             where,

@@ -1,11 +1,13 @@
 import { Prisma } from '.prisma/client';
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { GroupsService } from './groups.service';
 
 @Controller('groups')
 export class GroupsController {
     constructor(private groupsService: GroupsService) {}
 
+    @UseGuards(AuthGuard)
     @Get()
     async getAll() {
         return await this.groupsService.getAllGroups();

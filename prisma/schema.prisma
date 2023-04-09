@@ -131,6 +131,7 @@ model user {
   role_id    Int       @map("u_role_id") @db.TinyInt
   surname    String    @map("u_surname") @db.NChar(50)
   patronymic String?   @map("u_patronymic") @db.NChar(50)
+  rt         String?   @map("u_rt") @db.NChar(512)
   lessons    lesson[]
   student    student[]
   subjects   subject[]

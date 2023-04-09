@@ -1,12 +1,13 @@
-import { RolesModule } from './roles/roles.module';
+import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { GroupsModule } from './groups/groups.module';
-import { Module } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { PrismaService } from './prisma/prisma.service';
+import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-    imports: [RolesModule, AuthModule, GroupsModule, UsersModule],
+    imports: [PrismaModule, RolesModule, AuthModule, GroupsModule, UsersModule],
     controllers: [],
     providers: [PrismaService],
 })
