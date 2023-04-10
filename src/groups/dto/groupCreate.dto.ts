@@ -1,4 +1,4 @@
-export class groupCreateDto {
+export class GroupCreateDto {
     number: string;
     form: number;
 }

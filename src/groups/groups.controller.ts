@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetCurrentUserId } from 'src/auth/decorators/getCurrentUserId.decorator';
-import { groupCreateDto, groupDeleteDto, groupUpdateDto } from './dto';
+import { GroupCreateDto, GroupDeleteDto, GroupUpdateDto } from './dto';
 import { GroupsService } from './groups.service';
 
 @Controller('groups')
@@ -25,17 +25,17 @@ export class GroupsController {
     }
 
     @Post()
-    async create(@Body() data: groupCreateDto) {
+    async create(@Body() data: GroupCreateDto) {
         return await this.groupsService.createGroup(data);
     }
 
     @Patch()
-    async update(@Body() params: groupUpdateDto) {
+    async update(@Body() params: GroupUpdateDto) {
         return await this.groupsService.updateGroup(params);
     }
 
     @Delete()
-    async delete(@Body() where: groupDeleteDto) {
+    async delete(@Body() where: GroupDeleteDto) {
         return await this.groupsService.deleteGroup(where);
     }
 }

@@ -1,3 +1,3 @@
-export class userDeleteDto {
+export class UserDeleteDto {
     id: string;
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { userDeleteDto, userUpdateDto } from './dto';
+import { UserDeleteDto, UserUpdateDto } from './dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -18,12 +18,12 @@ export class UsersController {
     }
 
     @Patch()
-    async update(@Body() params: userUpdateDto) {
+    async update(@Body() params: UserUpdateDto) {
         return await this.usersService.updateUser(params);
     }
 
     @Delete()
-    async delete(@Body() where: userDeleteDto) {
+    async delete(@Body() where: UserDeleteDto) {
         return await this.usersService.deleteUser(where);
     }
 }

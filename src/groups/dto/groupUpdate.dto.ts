@@ -1,4 +1,4 @@
-export class groupUpdateDto {
+export class GroupUpdateDto {
     where: {
         id: number;
     };

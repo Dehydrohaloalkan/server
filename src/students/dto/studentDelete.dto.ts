@@ -1,3 +1,3 @@
-export class studentDeleteDto {
+export class StudentDeleteDto {
     id: string;
 }

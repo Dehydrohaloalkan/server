@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { user, user_role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { UsersService } from 'src/users/users.service';
-import { AuthDto, payloadUserDto } from './dto/auth.dto';
+import { AuthDto, PayloadUserDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +67,7 @@ export class AuthService {
 
         if (!token) throw new UnauthorizedException();
 
-        const userData: payloadUserDto = this.validateRefreshToken(token);
+        const userData: PayloadUserDto = this.validateRefreshToken(token);
         if (!userData) throw new UnauthorizedException();
 
         const userFromDb = await this.usersService.getUserBy({ id: userData.id });
@@ -101,7 +101,7 @@ export class AuthService {
             user_role: user_role;
         }
     ) {
-        const payload = new payloadUserDto(userData);
+        const payload = new PayloadUserDto(userData);
 
         return {
             accessToken: this.jwtService.sign(payload, {

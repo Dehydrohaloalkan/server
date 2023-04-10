@@ -5,7 +5,7 @@ export class AuthDto {
     password: string;
 }
 
-export class payloadUserDto {
+export class PayloadUserDto {
     constructor(
         data: user & {
             user_role: user_role;

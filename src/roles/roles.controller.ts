@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { roleCreateDto } from './dto';
+import { RoleCreateDto } from './dto';
 import { RolesService } from './roles.service';
 
 @Controller('user_roles')
@@ -12,7 +12,7 @@ export class RolesController {
     }
 
     @Post()
-    async create(@Body() data: roleCreateDto) {
+    async create(@Body() data: RoleCreateDto) {
         return await this.rolesService.createRole(data);
     }
 }

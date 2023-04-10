@@ -1,3 +1,3 @@
-export class groupDeleteDto {
+export class GroupDeleteDto {
     id: number;
 }

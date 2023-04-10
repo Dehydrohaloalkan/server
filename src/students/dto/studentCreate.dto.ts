@@ -1,4 +1,4 @@
-export class studentCreateDto {
+export class StudentCreateDto {
     id: string;
     is_group_leader: boolean;
     is_marking: boolean;

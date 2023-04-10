@@ -1,4 +1,4 @@
-export class studentUpdateDto {
+export class StudentUpdateDto {
     where: {
         id: string;
     };
