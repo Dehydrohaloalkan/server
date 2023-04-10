@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { groupCreateDto, groupDeleteDto, groupUpdateDto } from './dto';
 import { GroupsService } from './groups.service';
 
@@ -9,6 +9,11 @@ export class GroupsController {
     @Get()
     async getAll() {
         return await this.groupsService.getAllGroups();
+    }
+
+    @Get(':id')
+    async getGroupInfo(@Param() params) {
+        return await this.groupsService.getGroupInfo(params.id);
     }
 
     @Post()

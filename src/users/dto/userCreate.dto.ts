@@ -1,5 +1,3 @@
-import { Prisma } from '@prisma/client';
-
 export class userCreateDto {
     id: string;
     name: string;
@@ -8,5 +6,5 @@ export class userCreateDto {
     password?: string;
     patronymic?: string;
     rt?: string;
-    user_role: Prisma.user_roleCreateNestedOneWithoutUsersInput;
+    role_id: number;
 }

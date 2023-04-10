@@ -40,12 +40,15 @@ export class StudentsService {
         return students;
     }
     async createStudent(data: studentCreateDto) {
-        throw new Error('Method not implemented.');
+        return await this.prisma.student.create({ data: data });
     }
     async updateStudent(params: studentUpdateDto) {
-        throw new Error('Method not implemented.');
+        return await this.prisma.student.update({
+            where: params.where,
+            data: params.data,
+        });
     }
     async deleteStudent(where: studentDeleteDto) {
-        throw new Error('Method not implemented.');
+        return await this.prisma.student.delete({ where: where });
     }
 }

@@ -16,6 +16,36 @@ export class GroupsService {
         });
     }
 
+    async getGroupInfo(id: number) {
+        return await this.prisma.group.findFirst({
+            where: {
+                id: id,
+            },
+            select: {
+                id: true,
+                number: true,
+                form: true,
+                students: {
+                    select: {
+                        id: true,
+                        is_group_leader: true,
+                        is_marking: true,
+                        subgroup: true,
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                surname: true,
+                                patronymic: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
+
     async createGroup(data: Prisma.groupCreateInput) {
         return this.prisma.group.create({ data });
     }
