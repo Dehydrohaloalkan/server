@@ -85,14 +85,14 @@ model student {
 model subject {
   id              Int             @id(map: "PK_subject") @default(autoincrement()) @map("s_id")
   course_id       Int             @map("s_course_id")
-  recurrense_json String          @map("s_recurrense_json") @db.NVarChar(Max)
+  recurrence_json String          @map("s_recurrence_json") @db.NVarChar(Max)
   teacher_id      String          @map("s_teacher_id") @db.UniqueIdentifier
-  type            Int             @map("s_type") @db.TinyInt
+  type_id         Int             @map("s_type_id") @db.TinyInt
   lessons         lesson[]
   course          course          @relation(fields: [course_id], references: [id], onUpdate: NoAction, map: "FK_subject_course")
-  subject_type    subject_type    @relation(fields: [type], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
+  type            subject_type    @relation(fields: [type_id], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
   teacher         user            @relation(fields: [teacher_id], references: [id], onUpdate: NoAction, map: "FK_subject_user")
-  subject_groups  subject_group[]
+  groups          subject_group[]
 
   @@index([course_id], map: "IX_subject_course_id")
 }
@@ -133,7 +133,7 @@ model user {
   patronymic String?   @map("u_patronymic") @db.NChar(50)
   rt         String?   @map("u_rt") @db.NChar(512)
   lessons    lesson[]
-  student    student[]
+  students   student[]
   subjects   subject[]
   user_role  user_role @relation(fields: [role_id], references: [id], onUpdate: NoAction, map: "FK_user_user_role")
 

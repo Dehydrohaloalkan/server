@@ -40,7 +40,7 @@ export class StudentsService {
         return students;
     }
     async createStudent(data: StudentCreateDto) {
-        return await this.prisma.student.create({ data: data });
+        return await this.prisma.student.create({ data });
     }
     async updateStudent(params: StudentUpdateDto) {
         return await this.prisma.student.update({
@@ -49,6 +49,6 @@ export class StudentsService {
         });
     }
     async deleteStudent(where: StudentDeleteDto) {
-        return await this.prisma.student.delete({ where: where });
+        return await this.prisma.student.delete({ where });
     }
 }

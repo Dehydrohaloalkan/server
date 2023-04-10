@@ -19,9 +19,7 @@ export class CoursesService {
     }
 
     async createCourse(data: CourseCreateDto) {
-        return await this.prisma.course.create({
-            data: data,
-        });
+        return await this.prisma.course.create({ data });
     }
     async updateCourse(params: CourseUpdateDto) {
         return await this.prisma.course.update({
@@ -30,8 +28,6 @@ export class CoursesService {
         });
     }
     async deleteCourse(where: CourseDeleteDto) {
-        return await this.prisma.course.delete({
-            where,
-        });
+        return await this.prisma.course.delete({ where });
     }
 }

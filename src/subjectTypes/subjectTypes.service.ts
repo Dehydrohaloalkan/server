@@ -16,8 +16,6 @@ export class SubjectTypesService {
     }
 
     async createSubjectType(data: SubjectTypeCreateDto) {
-        return await this.prisma.subject_type.create({
-            data: data,
-        });
+        return await this.prisma.subject_type.create({ data });
     }
 }
