@@ -46,6 +46,24 @@ export class GroupsService {
         });
     }
 
+    async getGroupInfoByUser(userId: string) {
+        const group = await this.prisma.group.findFirst({
+            where: {
+                students: {
+                    some: {
+                        user: {
+                            id: userId,
+                        },
+                    },
+                },
+            },
+            select: {
+                id: true,
+            },
+        });
+        return this.getGroupInfo(group.id);
+    }
+
     async createGroup(data: Prisma.groupCreateInput) {
         return this.prisma.group.create({ data });
     }
