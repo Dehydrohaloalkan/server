@@ -7,7 +7,21 @@ export class UsersService {
     constructor(private prisma: PrismaService) {}
 
     async getAllUsers() {
-        return this.prisma.user.findMany({ include: { user_role: true } });
+        return this.prisma.user.findMany({
+            select: {
+                id: true,
+                name: true,
+                surname: true,
+                patronymic: true,
+                email: true,
+                user_role: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
+        });
     }
 
     async createUser(data: Prisma.userCreateInput) {
@@ -27,7 +41,7 @@ export class UsersService {
         return this.prisma.user.delete({ where });
     }
 
-    async getUserByEmail(where: Prisma.userWhereInput) {
+    async getUserBy(where: Prisma.userWhereInput) {
         return this.prisma.user.findFirst({
             where,
             include: { user_role: true },

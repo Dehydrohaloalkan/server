@@ -1,36 +1,28 @@
-import { Prisma } from '.prisma/client';
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { groupCreateDto, groupDeleteDto, groupUpdateDto } from './dto';
 import { GroupsService } from './groups.service';
 
 @Controller('groups')
 export class GroupsController {
     constructor(private groupsService: GroupsService) {}
 
-    @UseGuards(AuthGuard)
     @Get()
     async getAll() {
         return await this.groupsService.getAllGroups();
     }
 
     @Post()
-    async create(@Body() data: Prisma.groupCreateInput) {
+    async create(@Body() data: groupCreateDto) {
         return await this.groupsService.createGroup(data);
     }
 
     @Patch()
-    async update(
-        @Body()
-        params: {
-            where: Prisma.groupWhereUniqueInput;
-            data: Prisma.groupUpdateInput;
-        }
-    ) {
+    async update(@Body() params: groupUpdateDto) {
         return await this.groupsService.updateGroup(params);
     }
 
     @Delete()
-    async delete(@Body() where: Prisma.groupWhereUniqueInput) {
+    async delete(@Body() where: groupDeleteDto) {
         return await this.groupsService.deleteGroup(where);
     }
 }

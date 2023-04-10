@@ -7,7 +7,13 @@ export class GroupsService {
     constructor(private prisma: PrismaService) {}
 
     async getAllGroups() {
-        return this.prisma.group.findMany();
+        return this.prisma.group.findMany({
+            select: {
+                id: true,
+                number: true,
+                form: true,
+            },
+        });
     }
 
     async createGroup(data: Prisma.groupCreateInput) {

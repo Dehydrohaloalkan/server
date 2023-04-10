@@ -10,7 +10,7 @@ export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
     async login(userDto: AuthDto) {
-        const candidate = await this.usersService.getUserByEmail({
+        const candidate = await this.usersService.getUserBy({
             email: userDto.email,
         });
 
@@ -62,7 +62,35 @@ export class AuthService {
         });
     }
 
-    async refreshTokens() {}
+    async refreshTokens(token: string) {
+        console.log('🚀 ~ file: auth.service.ts:66 ~ AuthService ~ refreshTokens ~ token:', token);
+
+        if (!token) throw new UnauthorizedException();
+
+        const userData: payloadUserDto = this.validateRefreshToken(token);
+        if (!userData) throw new UnauthorizedException();
+
+        const userFromDb = await this.usersService.getUserBy({ id: userData.id });
+
+        if (await bcrypt.compare(userFromDb.rt.trim(), token)) throw new UnauthorizedException();
+
+        const data = await this.generateTokens(userFromDb);
+        const rtHash = await this.generateHash(data.refreshToken);
+        await this.usersService.updateUser({
+            where: { id: userFromDb.id },
+            data: { rt: rtHash },
+        });
+
+        return data;
+    }
+
+    validateRefreshToken(token) {
+        try {
+            return this.jwtService.verify(token, { secret: process.env.RT_SECRET });
+        } catch (error: any) {
+            return null;
+        }
+    }
 
     private async generateHash(data: string) {
         return await bcrypt.hash(data, 5);

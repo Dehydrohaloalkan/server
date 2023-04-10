@@ -1,8 +1,8 @@
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { GetCurrentUserId } from './decorators/getcurrentuserid.decorator';
+import { GetCurrentUserId } from './decorators/getCurrentUserId.decorator';
 import { AuthDto } from './dto/auth.dto';
 
 @Controller('auth')
@@ -12,7 +12,7 @@ export class AuthController {
     @Post('login')
     async login(@Body() userDto: AuthDto, @Res({ passthrough: true }) response: Response) {
         const { accessToken, refreshToken, data } = await this.authService.login(userDto);
-        response.cookie('jwt', accessToken, { httpOnly: true });
+        response.cookie('jwt', refreshToken, { httpOnly: true });
         return { accessToken, user: data };
     }
 
@@ -24,5 +24,11 @@ export class AuthController {
     }
 
     @Post('refresh')
-    async refresh() {}
+    async refresh(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
+        const { accessToken, refreshToken, data } = await this.authService.refreshTokens(
+            request.cookies['jwt']
+        );
+        response.cookie('jwt', refreshToken, { httpOnly: true });
+        return { accessToken, user: data };
+    }
 }
