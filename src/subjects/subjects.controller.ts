@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { GetCurrentUserId } from 'src/auth/decorators/getCurrentUserId.decorator';
+import { SubjectCreateDto, SubjectDeleteDto, SubjectUpdateDto, subjectAddGroupDto } from './dto';
 import { SubjectsService } from './subjects.service';
-import { SubjectCreateDto, SubjectDeleteDto, SubjectUpdateDto } from './dto';
 
 @Controller('subjects')
 export class SubjectsController {
@@ -9,6 +11,17 @@ export class SubjectsController {
     @Get()
     async getAll() {
         return await this.subjectsService.getAllSubjects();
+    }
+
+    @Post('add_groups')
+    async addGroupsToSubject(@Body() data: subjectAddGroupDto) {
+        return await this.subjectsService.addGroupsToSubject(data);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('info')
+    async getSubjectsInfoByUser(@GetCurrentUserId() userId) {
+        return await this.subjectsService.getSubjectsInfoByUser(userId);
     }
 
     @Post()

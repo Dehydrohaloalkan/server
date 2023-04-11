@@ -1,3 +1,4 @@
+import { LessonsModule } from './lessons/lessons.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { CoursesModule } from './courses/courses.module';
 import { Module } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
+        LessonsModule,
         SubjectsModule,
         CoursesModule,
         SubjectTypesModule,

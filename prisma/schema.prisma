@@ -56,11 +56,11 @@ model absence {
 }
 
 model grade {
-  student_id  String  @map("lsg_student_id") @db.UniqueIdentifier
-  lesson_id   String  @map("lsg_lesson_id") @db.UniqueIdentifier
-  grade_value Int     @map("lsg_grade_value") @db.TinyInt
-  lesson      lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
-  student     student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_student")
+  student_id String  @map("lsg_student_id") @db.UniqueIdentifier
+  lesson_id  String  @map("lsg_lesson_id") @db.UniqueIdentifier
+  value      Int     @map("lsg_grade_value") @db.TinyInt
+  lesson     lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
+  student    student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_student")
 
   @@id([student_id, lesson_id], map: "PK_lesson_student_grade")
   @@map("lesson_student_grade")
