@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { v4 } from 'uuid';
 import { StudentCreateDto, StudentDeleteDto, StudentUpdateDto } from './dto';
 
 @Injectable()
@@ -40,7 +41,12 @@ export class StudentsService {
         return students;
     }
     async createStudent(data: StudentCreateDto) {
-        return await this.prisma.student.create({ data });
+        return await this.prisma.student.create({
+            data: {
+                id: v4(),
+                ...data,
+            },
+        });
     }
     async updateStudent(params: StudentUpdateDto) {
         return await this.prisma.student.update({

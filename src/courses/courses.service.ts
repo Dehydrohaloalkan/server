@@ -19,7 +19,14 @@ export class CoursesService {
     }
 
     async createCourse(data: CourseCreateDto) {
-        return await this.prisma.course.create({ data });
+        return await this.prisma.course.create({
+            data: {
+                name: data.name,
+                form: data.form,
+                start_date: new Date(data.start_date),
+                end_date: new Date(data.end_date),
+            },
+        });
     }
     async updateCourse(params: CourseUpdateDto) {
         return await this.prisma.course.update({
