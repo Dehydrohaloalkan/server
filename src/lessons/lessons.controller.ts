@@ -4,7 +4,7 @@ import { GetCurrentUserId } from 'src/auth/decorators/getCurrentUserId.decorator
 import { LessonsUpdateDto } from './dto/lessonsUpdate.dto';
 import { LessonsService } from './lessons.service';
 
-@Controller()
+@Controller('lessons')
 export class LessonsController {
     constructor(private lessonsService: LessonsService) {}
 

@@ -9,7 +9,6 @@ import { AtStrategy } from './strategies/at.strategy';
 
 @Module({
     imports: [UsersModule, JwtModule.register({}), PassportModule],
-    exports: [AuthService, JwtModule],
     controllers: [AuthController],
     providers: [AuthService, AtStrategy],
 })

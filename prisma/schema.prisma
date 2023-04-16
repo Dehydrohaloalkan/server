@@ -9,7 +9,7 @@ datasource db {
 
 model course {
   id         Int       @id(map: "PK_course") @default(autoincrement()) @map("c_id")
-  name       String    @map("c_name") @db.NChar(20)
+  name       String    @map("c_name") @db.NVarChar(50)
   start_date DateTime  @map("c_start_date") @db.Date
   end_date   DateTime  @map("c_end_date") @db.Date
   form       Int       @map("c_form") @db.TinyInt
@@ -20,7 +20,7 @@ model course {
 
 model group {
   id       Int             @id(map: "PK_group") @default(autoincrement()) @map("g_id")
-  number   String          @map("g_number") @db.NChar(10)
+  number   String          @map("g_number") @db.NVarChar(50)
   form     Int             @map("g_form") @db.TinyInt
   students student[]
   subjects subject_group[]
@@ -33,9 +33,9 @@ model lesson {
   start_time DateTime  @map("l_start_time") @db.DateTime
   end_time   DateTime  @map("l_end_time") @db.DateTime
   subject_id Int       @map("l_subject_id")
-  location   String    @map("l_location") @db.NChar(30)
+  location   String    @map("l_location") @db.NVarChar(15)
   teacher_id String    @map("l_teacher_id") @db.UniqueIdentifier
-  subject    subject   @relation(fields: [subject_id], references: [id], onUpdate: NoAction, map: "FK_lesson_subject")
+  subject    subject   @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_lesson_subject")
   user       user      @relation(fields: [teacher_id], references: [id], onUpdate: NoAction, map: "FK_lesson_user")
   absences   absence[]
   grades     grade[]
@@ -48,8 +48,8 @@ model absence {
   student_id String  @map("lsa_student_id") @db.UniqueIdentifier
   lesson_id  String  @map("lsa_lesson_id") @db.UniqueIdentifier
   hours      Int     @map("lsa_hours") @db.TinyInt
-  lesson     lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_absence_lesson")
-  student    student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_absence_student")
+  lesson     lesson  @relation(fields: [lesson_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_lesson_student_absence_lesson")
+  student    student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_lesson_student_absence_student")
 
   @@id([student_id, lesson_id], map: "PK_lesson_student_absence")
   @@map("lesson_student_absence")
@@ -59,8 +59,8 @@ model grade {
   student_id String  @map("lsg_student_id") @db.UniqueIdentifier
   lesson_id  String  @map("lsg_lesson_id") @db.UniqueIdentifier
   value      Int     @map("lsg_grade_value") @db.TinyInt
-  lesson     lesson  @relation(fields: [lesson_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
-  student    student @relation(fields: [student_id], references: [id], onUpdate: NoAction, map: "FK_lesson_student_grade_student")
+  lesson     lesson  @relation(fields: [lesson_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_lesson_student_grade_lesson")
+  student    student @relation(fields: [student_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_lesson_student_grade_student")
 
   @@id([student_id, lesson_id], map: "PK_lesson_student_grade")
   @@map("lesson_student_grade")
@@ -76,7 +76,7 @@ model student {
   absences        absence[]
   grades          grade[]
   group           group     @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "FK_student_group")
-  user            user      @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "FK_student_user")
+  user            user      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_student_user")
 
   @@index([group_id], map: "IX_student_group")
   @@index([user_id], map: "IX_student_user_id")
@@ -89,7 +89,7 @@ model subject {
   teacher_id      String          @map("s_teacher_id") @db.UniqueIdentifier
   type_id         Int             @map("s_type_id") @db.TinyInt
   lessons         lesson[]
-  course          course          @relation(fields: [course_id], references: [id], onUpdate: NoAction, map: "FK_subject_course")
+  course          course          @relation(fields: [course_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_subject_course")
   type            subject_type    @relation(fields: [type_id], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
   teacher         user            @relation(fields: [teacher_id], references: [id], onUpdate: NoAction, map: "FK_subject_user")
   groups          subject_group[]
@@ -101,15 +101,15 @@ model subject_group {
   subject_id      Int      @map("sg_subject_id")
   group_id        Int      @map("sg_group_id")
   subgroup_number Boolean? @map("sg_subgroup_number")
-  group           group    @relation(fields: [group_id], references: [id], onUpdate: NoAction, map: "FK_course_group_group")
-  subject         subject  @relation(fields: [subject_id], references: [id], onUpdate: NoAction, map: "FK_subject_group_subject")
+  group           group    @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_course_group_group")
+  subject         subject  @relation(fields: [subject_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_subject_group_subject")
 
-  @@id([subject_id, group_id], map: "PK_course_group")
+  @@id([subject_id, group_id], map: "PK_subject_group")
 }
 
 model subject_type {
   id       Int       @id(map: "PK_course_type") @default(autoincrement()) @map("st_id") @db.TinyInt
-  name     String    @map("st_name") @db.NChar(20)
+  name     String    @map("st_name") @db.NVarChar(50)
   subjects subject[]
 }
 
@@ -125,13 +125,13 @@ model sysdiagrams {
 
 model user {
   id         String    @id(map: "PK_user") @map("u_id") @db.UniqueIdentifier
-  name       String    @map("u_name") @db.NChar(100)
-  email      String    @map("u_email") @db.NChar(50)
-  password   String?   @map("u_password") @db.NChar(255)
+  name       String    @map("u_name") @db.NVarChar(50)
+  email      String    @unique(map: "IX_user_email") @map("u_email") @db.NVarChar(50)
+  password   String?   @map("u_password") @db.NVarChar(255)
   role_id    Int       @map("u_role_id") @db.TinyInt
-  surname    String    @map("u_surname") @db.NChar(50)
-  patronymic String?   @map("u_patronymic") @db.NChar(50)
-  rt         String?   @map("u_rt") @db.NChar(512)
+  surname    String    @map("u_surname") @db.NVarChar(50)
+  patronymic String?   @map("u_patronymic") @db.NVarChar(50)
+  rt         String?   @map("u_rt") @db.NVarChar(512)
   lessons    lesson[]
   students   student[]
   subjects   subject[]
@@ -142,6 +142,6 @@ model user {
 
 model user_role {
   id    Int    @id(map: "PK_user_role") @default(autoincrement()) @map("ur_id") @db.TinyInt
-  name  String @map("ur_name") @db.NChar(20)
+  name  String @map("ur_name") @db.NVarChar(50)
   users user[]
 }

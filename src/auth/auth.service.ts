@@ -72,7 +72,8 @@ export class AuthService {
 
         const userFromDb = await this.usersService.getUserBy({ id: userData.id });
 
-        if (await bcrypt.compare(userFromDb.rt.trim(), token)) throw new UnauthorizedException();
+        // TODO Check db
+        if (!(await bcrypt.compare(token, userFromDb.rt))) throw new UnauthorizedException();
 
         const data = await this.generateTokens(userFromDb);
         const rtHash = await this.generateHash(data.refreshToken);
