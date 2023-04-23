@@ -1,3 +1,5 @@
+import { AbsencesGateway } from './absences/absences.gateway';
+import { AbsencesModule } from './absences/absences.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { CoursesModule } from './courses/courses.module';
@@ -13,6 +15,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
+        AbsencesModule,
         LessonsModule,
         SubjectsModule,
         CoursesModule,
@@ -25,6 +28,6 @@ import { UsersModule } from './users/users.module';
         UsersModule,
     ],
     controllers: [],
-    providers: [PrismaService],
+    providers: [AbsencesGateway, PrismaService],
 })
 export class AppModule {}

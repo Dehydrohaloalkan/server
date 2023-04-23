@@ -18,5 +18,6 @@
         "titleBar.inactiveBackground": "#696eb099",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#696eb0"
+    "peacock.color": "#696eb0",
+    "cSpell.words": ["websockets"]
 }
