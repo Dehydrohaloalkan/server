@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
-import { GroupsController } from './groups.controller';
 import { GroupsService } from './groups.service';
+import { GroupsResolver } from './groups.resolver';
 
 @Module({
-    imports: [AuthModule],
-    controllers: [GroupsController],
-    providers: [GroupsService],
-    exports: [GroupsService],
+  providers: [GroupsResolver, GroupsService]
 })
 export class GroupsModule {}

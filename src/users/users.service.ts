@@ -1,57 +1,92 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { v4 } from 'uuid';
-import { PrismaService } from '../prisma/prisma.service';
-import { UserCreateDto } from './dto';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService) {}
 
-    async getAllUsers() {
-        return this.prisma.user.findMany({
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                patronymic: true,
-                email: true,
-                user_role: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-    }
-
-    async createUser(data: UserCreateDto) {
+    create(createUserInput: CreateUserInput) {
         return this.prisma.user.create({
             data: {
                 id: v4(),
-                ...data,
+                ...createUserInput,
             },
         });
     }
 
-    async updateUser(params: { where: Prisma.userWhereUniqueInput; data: Prisma.userUpdateInput }) {
-        const { where, data } = params;
-        return this.prisma.user.update({
-            where,
-            data,
-            include: { user_role: true },
+    findAll() {
+        return this.prisma.user.findMany();
+    }
+
+    findOne(id: string) {
+        return this.prisma.user.findUnique({
+            where: {
+                id: id,
+            },
         });
     }
 
-    async deleteUser(where: Prisma.userWhereUniqueInput) {
-        return this.prisma.user.delete({ where });
+    findOneWithRole(id: string) {
+        return this.prisma.user.findUnique({
+            where: {
+                id: id,
+            },
+            include: {
+                user_role: true,
+            },
+        });
     }
 
-    async getUserBy(where: Prisma.userWhereInput) {
+    update(id: string, updateUserInput: UpdateUserInput) {
+        return this.prisma.user.update({
+            where: {
+                id: id,
+            },
+            data: updateUserInput,
+        });
+    }
+
+    remove(id: string) {
+        return this.prisma.user.delete({
+            where: {
+                id: id,
+            },
+        });
+    }
+
+    findByEmail(email: string) {
         return this.prisma.user.findFirst({
-            where,
-            include: { user_role: true },
+            where: {
+                email: email,
+            },
+            include: {
+                user_role: true,
+            },
+        });
+    }
+
+    updatePassword(id: string, passwordHash: string) {
+        return this.prisma.user.update({
+            where: {
+                id: id,
+            },
+            data: {
+                password: passwordHash,
+            },
+        });
+    }
+
+    updateRt(id: string, rtHash: string) {
+        return this.prisma.user.update({
+            where: {
+                id: id,
+            },
+            data: {
+                rt: rtHash,
+            },
         });
     }
 }

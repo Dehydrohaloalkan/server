@@ -1,0 +1,91 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  id: Int!
+  name: String!
+}
+
+type User {
+  id: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  role_id: Int!
+  role: Role!
+}
+
+type LoginUserData {
+  id: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  role: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: LoginUserData!
+}
+
+type Group {
+  id: Int!
+  number: String!
+  form: Int!
+}
+
+type Query {
+  groups: [Group!]!
+  group(id: Int!): Group!
+  users: [User!]!
+  user(id: String!): User!
+  roles: [Role!]!
+  role(id: Int!): Role!
+}
+
+type Mutation {
+  createGroup(createGroupInput: CreateGroupInput!): Group!
+  updateGroup(updateGroupInput: UpdateGroupInput!): Group!
+  removeGroup(id: Int!): Group!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  logout: LoginUserData!
+  refresh: LoginResponse!
+}
+
+input CreateGroupInput {
+  number: String!
+  form: Int!
+}
+
+input UpdateGroupInput {
+  number: String
+  form: Int
+  id: Int!
+}
+
+input CreateUserInput {
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  role_id: Int!
+}
+
+input UpdateUserInput {
+  name: String
+  surname: String
+  patronymic: String
+  email: String
+  role_id: Int
+  id: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}

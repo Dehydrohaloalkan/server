@@ -1,33 +1,33 @@
-import { AbsencesGateway } from './absences/absences.gateway';
-import { AbsencesModule } from './absences/absences.module';
-import { LessonsModule } from './lessons/lessons.module';
-import { SubjectsModule } from './subjects/subjects.module';
-import { CoursesModule } from './courses/courses.module';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { GroupsModule } from './groups/groups.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RolesModule } from './roles/roles.module';
-import { StudentsModule } from './students/students.module';
-import { SubjectTypesModule } from './subjectTypes/subjectTypes.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
-        AbsencesModule,
-        LessonsModule,
-        SubjectsModule,
-        CoursesModule,
-        SubjectTypesModule,
-        StudentsModule,
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            context: ({ req, res }) => ({ req, res }),
+            driver: ApolloDriver,
+            autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+            playground: {
+                settings: {
+                    'request.credentials': 'include',
+                },
+            },
+        }),
+        GroupsModule,
         PrismaModule,
+        UsersModule,
         RolesModule,
         AuthModule,
-        GroupsModule,
-        UsersModule,
     ],
     controllers: [],
-    providers: [AbsencesGateway, PrismaService],
+    providers: [PrismaService],
 })
 export class AppModule {}

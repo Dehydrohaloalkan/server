@@ -1,86 +1,44 @@
-import { Prisma } from '.prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateGroupInput } from './dto/create-group.input';
+import { UpdateGroupInput } from './dto/update-group.input';
 
 @Injectable()
 export class GroupsService {
     constructor(private prisma: PrismaService) {}
 
-    async getAllGroups() {
-        return this.prisma.group.findMany({
-            select: {
-                id: true,
-                number: true,
-                form: true,
-            },
+    create(createGroupInput: CreateGroupInput) {
+        return this.prisma.group.create({
+            data: createGroupInput,
         });
     }
 
-    async getGroupInfo(id: number) {
-        return await this.prisma.group.findFirst({
+    findAll() {
+        return this.prisma.group.findMany();
+    }
+
+    findOne(id: number) {
+        return this.prisma.group.findUnique({
             where: {
                 id: id,
             },
-            select: {
-                id: true,
-                number: true,
-                form: true,
-                students: {
-                    select: {
-                        id: true,
-                        is_group_leader: true,
-                        is_marking: true,
-                        subgroup: true,
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                surname: true,
-                                patronymic: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-            },
         });
     }
 
-    async getGroupInfoByUser(userId: string) {
-        const group = await this.getUserGroup(userId);
-        return this.getGroupInfo(group.id);
-    }
-
-    async getUserGroup(userId: string) {
-        return await this.prisma.group.findFirst({
+    update(id: number, updateGroupInput: UpdateGroupInput) {
+        return this.prisma.group.update({
             where: {
-                students: {
-                    some: {
-                        user: {
-                            id: userId,
-                        },
-                    },
-                },
+                id: id,
             },
-            select: {
-                id: true,
-            },
+            data: updateGroupInput,
         });
     }
 
-    async createGroup(data: Prisma.groupCreateInput) {
-        return this.prisma.group.create({ data });
-    }
-
-    async updateGroup(params: {
-        where: Prisma.groupWhereUniqueInput;
-        data: Prisma.groupUpdateInput;
-    }) {
-        const { where, data } = params;
-        return this.prisma.group.update({ where, data });
-    }
-
-    async deleteGroup(where: Prisma.groupWhereUniqueInput) {
-        return this.prisma.group.delete({ where });
+    remove(id: number) {
+        return this.prisma.group.delete({
+            where: {
+                id: id,
+            },
+        });
     }
 }

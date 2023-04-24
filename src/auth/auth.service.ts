@@ -1,18 +1,15 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { user, user_role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import { UsersService } from 'src/users/users.service';
-import { AuthDto, PayloadUserDto } from './dto/auth.dto';
+import { UsersService } from '../users/users.service';
+import { LoginUserData } from './dto/login-user-data';
 
 @Injectable()
 export class AuthService {
     constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
-    async login(userDto: AuthDto) {
-        const candidate = await this.usersService.getUserBy({
-            email: userDto.email,
-        });
+    async validateUser(email: string, password: string) {
+        const candidate = await this.usersService.findByEmail(email);
 
         if (!candidate) {
             throw new HttpException('User does not exist', HttpStatus.BAD_REQUEST);
@@ -22,18 +19,11 @@ export class AuthService {
 
         if (!candidate.password) {
             // write password to db (registration logic)
-            const passwordHash = await this.generateHash(userDto.password);
-
-            user = await this.usersService.updateUser({
-                where: { id: candidate.id },
-                data: { password: passwordHash },
-            });
+            const passwordHash = await this.generateHash(password);
+            user = await this.usersService.updatePassword(candidate.id, passwordHash);
         } else {
             // login logic
-            const passwordsEquals = await bcrypt.compare(
-                userDto.password,
-                candidate.password.trim()
-            );
+            const passwordsEquals = await bcrypt.compare(password, candidate.password);
 
             if (passwordsEquals) {
                 user = candidate;
@@ -43,44 +33,45 @@ export class AuthService {
                 });
             }
         }
+        return user;
+    }
 
-        const data = await this.generateTokens(user);
-
-        const rtHash = await this.generateHash(data.refreshToken);
-        await this.usersService.updateUser({
-            where: { id: user.id },
-            data: { rt: rtHash },
+    async login(user: any) {
+        const data = await this.generateTokens({
+            id: user.id,
+            name: user.name,
+            surname: user.surname,
+            patronymic: user.patronymic,
+            role: user.user_role.name,
         });
 
+        const rtHash = await this.generateHash(data.refreshToken);
+        await this.usersService.updateRt(data.data.id, rtHash);
         return data;
     }
 
-    async logout(userId: string) {
-        await this.usersService.updateUser({
-            where: { id: userId },
-            data: { rt: null },
-        });
+    async logout(id: string) {
+        return await this.usersService.updateRt(id, '');
     }
 
-    async refreshTokens(token: string) {
-        console.log('🚀 ~ file: auth.service.ts:66 ~ AuthService ~ refreshTokens ~ token:', token);
-
+    async refresh(token: string) {
         if (!token) throw new UnauthorizedException();
 
-        const userData: PayloadUserDto = this.validateRefreshToken(token);
+        const userData: LoginUserData = this.validateRefreshToken(token);
         if (!userData) throw new UnauthorizedException();
 
-        const userFromDb = await this.usersService.getUserBy({ id: userData.id });
-
-        // TODO Check db
+        const userFromDb = await this.usersService.findOneWithRole(userData.id);
         if (!(await bcrypt.compare(token, userFromDb.rt))) throw new UnauthorizedException();
 
-        const data = await this.generateTokens(userFromDb);
-        const rtHash = await this.generateHash(data.refreshToken);
-        await this.usersService.updateUser({
-            where: { id: userFromDb.id },
-            data: { rt: rtHash },
+        const data = await this.generateTokens({
+            id: userFromDb.id,
+            name: userFromDb.name,
+            surname: userFromDb.surname,
+            patronymic: userFromDb.patronymic,
+            role: userFromDb.user_role.name,
         });
+        const rtHash = await this.generateHash(data.refreshToken);
+        await this.usersService.updateRt(userFromDb.id, rtHash);
 
         return data;
     }
@@ -93,20 +84,10 @@ export class AuthService {
         }
     }
 
-    private async generateHash(data: string) {
-        return await bcrypt.hash(data, 5);
-    }
-
-    async generateTokens(
-        userData: user & {
-            user_role: user_role;
-        }
-    ) {
-        const payload = new PayloadUserDto(userData);
-
+    private async generateTokens(payload: LoginUserData) {
         return {
             accessToken: this.jwtService.sign(payload, {
-                expiresIn: 15 * 60,
+                expiresIn: 60 * 60 * 24 * 7,
                 secret: process.env.AT_SECRET,
             }),
             refreshToken: this.jwtService.sign(payload, {
@@ -115,5 +96,9 @@ export class AuthService {
             }),
             data: payload,
         };
+    }
+
+    private async generateHash(data: string) {
+        return await bcrypt.hash(data, 5);
     }
 }
