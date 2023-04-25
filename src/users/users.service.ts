@@ -35,7 +35,7 @@ export class UsersService {
                 id: id,
             },
             include: {
-                user_role: true,
+                userRole: true,
             },
         });
     }
@@ -63,7 +63,7 @@ export class UsersService {
                 email: email,
             },
             include: {
-                user_role: true,
+                userRole: true,
             },
         });
     }

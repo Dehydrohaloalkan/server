@@ -68,7 +68,7 @@ export class AuthService {
             name: userFromDb.name,
             surname: userFromDb.surname,
             patronymic: userFromDb.patronymic,
-            role: userFromDb.user_role.name,
+            role: userFromDb.userRole.name,
         });
         const rtHash = await this.generateHash(data.refreshToken);
         await this.usersService.updateRt(userFromDb.id, rtHash);

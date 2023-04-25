@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
-export class CreateUserInput {
+export class CreateStudentInput {
     @Field()
     name: string;
 
@@ -15,5 +15,14 @@ export class CreateUserInput {
     email: string;
 
     @Field(() => Int)
-    roleId: number;
+    groupId: number;
+
+    @Field(() => Boolean)
+    subgroup: boolean;
+
+    @Field(() => Boolean)
+    isLeader: boolean;
+
+    @Field(() => Boolean)
+    isMarking: boolean;
 }

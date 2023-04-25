@@ -1,17 +1,19 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Student } from 'src/students/entities/student.entity';
 
 @ObjectType()
-export class Group {
+export class Course {
     @Field(() => Int)
     id: number;
 
     @Field()
-    number: string;
+    name: string;
+
+    @Field(() => Date)
+    startDate: string;
+
+    @Field(() => Date)
+    endDate: string;
 
     @Field(() => Int)
     form: number;
-
-    @Field(() => [Student])
-    students: Student[];
 }

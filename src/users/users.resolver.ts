@@ -25,7 +25,7 @@ export class UsersResolver {
 
     @ResolveField(() => Role)
     role(@Parent() user: User) {
-        return this.rolesService.findOne(user.role_id);
+        return this.rolesService.findOne(user.roleId);
     }
 
     @Query(() => User, { name: 'user' })

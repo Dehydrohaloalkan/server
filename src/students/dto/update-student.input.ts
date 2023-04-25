@@ -1,8 +1,8 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
-import { CreateUserInput } from './create-user.input';
+import { CreateStudentInput } from './create-student.input';
 
 @InputType()
-export class UpdateUserInput extends PartialType(CreateUserInput) {
+export class UpdateStudentInput extends PartialType(CreateStudentInput) {
     @Field()
     id: string;
 
@@ -19,5 +19,14 @@ export class UpdateUserInput extends PartialType(CreateUserInput) {
     email?: string;
 
     @Field(() => Int, { nullable: true })
-    roleId?: number;
+    groupId?: number;
+
+    @Field(() => Boolean, { nullable: true })
+    subgroup?: boolean;
+
+    @Field(() => Boolean, { nullable: true })
+    isLeader?: boolean;
+
+    @Field(() => Boolean, { nullable: true })
+    isMarking?: boolean;
 }

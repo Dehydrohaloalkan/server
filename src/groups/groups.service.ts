@@ -25,6 +25,18 @@ export class GroupsService {
         });
     }
 
+    findByStudentId(studentId: string) {
+        return this.prisma.group.findFirst({
+            where: {
+                students: {
+                    some: {
+                        id: studentId,
+                    },
+                },
+            },
+        });
+    }
+
     update(id: number, updateGroupInput: UpdateGroupInput) {
         return this.prisma.group.update({
             where: {

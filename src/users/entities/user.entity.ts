@@ -19,7 +19,7 @@ export class User {
     email: string;
 
     @Field(() => Int)
-    role_id: number;
+    roleId: number;
 
     @Field(() => Role)
     role: Role;

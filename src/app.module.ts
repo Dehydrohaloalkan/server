@@ -8,6 +8,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
+import { CoursesModule } from './courses/courses.module';
+import { TypesModule } from './types/types.module';
+import { StudentsModule } from './students/students.module';
 
 @Module({
     imports: [
@@ -26,6 +29,9 @@ import { UsersModule } from './users/users.module';
         UsersModule,
         RolesModule,
         AuthModule,
+        CoursesModule,
+        TypesModule,
+        StudentsModule,
     ],
     controllers: [],
     providers: [PrismaService],

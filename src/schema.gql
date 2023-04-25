@@ -13,7 +13,7 @@ type User {
   surname: String!
   patronymic: String
   email: String!
-  role_id: Int!
+  roleId: Int!
   role: Role!
 }
 
@@ -34,27 +34,71 @@ type Group {
   id: Int!
   number: String!
   form: Int!
+  students: [Student!]!
+}
+
+type Student {
+  studentId: String!
+  userId: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  subgroup: Boolean!
+  isLeader: Boolean!
+  isMarking: Boolean!
+  group: Group!
+}
+
+type Course {
+  id: Int!
+  name: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  form: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Type {
+  id: Int!
+  name: String!
 }
 
 type Query {
   groups: [Group!]!
   group(id: Int!): Group!
+  students: [Student!]!
+  student(id: String!): Student!
   users: [User!]!
   user(id: String!): User!
   roles: [Role!]!
   role(id: Int!): Role!
+  courses: [Course!]!
+  course(id: Int!): Course!
+  types: [Type!]!
+  type(id: Int!): Type!
 }
 
 type Mutation {
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
+  createStudent(createStudentInput: CreateStudentInput!): Student!
+  updateStudent(updateStudentInput: UpdateStudentInput!): Student!
+  removeStudent(id: String!): Student!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   logout: LoginUserData!
   refresh: LoginResponse!
+  createCourse(createCourseInput: CreateCourseInput!): Course!
+  updateCourse(updateCourseInput: UpdateCourseInput!): Course!
+  removeCourse(id: Int!): Course!
 }
 
 input CreateGroupInput {
@@ -68,12 +112,35 @@ input UpdateGroupInput {
   id: Int!
 }
 
+input CreateStudentInput {
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  groupId: Int!
+  subgroup: Boolean!
+  isLeader: Boolean!
+  isMarking: Boolean!
+}
+
+input UpdateStudentInput {
+  name: String
+  surname: String
+  patronymic: String
+  email: String
+  groupId: Int
+  subgroup: Boolean
+  isLeader: Boolean
+  isMarking: Boolean
+  id: String!
+}
+
 input CreateUserInput {
   name: String!
   surname: String!
   patronymic: String
   email: String!
-  role_id: Int!
+  roleId: Int!
 }
 
 input UpdateUserInput {
@@ -81,11 +148,26 @@ input UpdateUserInput {
   surname: String
   patronymic: String
   email: String
-  role_id: Int
+  roleId: Int
   id: String!
 }
 
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input CreateCourseInput {
+  name: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  form: Int!
+}
+
+input UpdateCourseInput {
+  name: String
+  startDate: DateTime
+  endDate: DateTime
+  form: Int
+  id: Int!
 }
