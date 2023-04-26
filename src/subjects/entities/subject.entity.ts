@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Group } from 'src/groups/entities/group.entity';
+import { Lesson } from 'src/lessons/entities/lesson.entity';
 import { Type } from 'src/types/entities/type.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Course } from '../../courses/entities/course.entity';
@@ -32,4 +33,7 @@ export class Subject {
 
     @Field(() => [Group])
     groups: Group[];
+
+    @Field(() => [Lesson])
+    lessons: Lesson[];
 }

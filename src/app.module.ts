@@ -12,6 +12,7 @@ import { CoursesModule } from './courses/courses.module';
 import { TypesModule } from './types/types.module';
 import { StudentsModule } from './students/students.module';
 import { SubjectsModule } from './subjects/subjects.module';
+import { LessonsModule } from './lessons/lessons.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { SubjectsModule } from './subjects/subjects.module';
         TypesModule,
         StudentsModule,
         SubjectsModule,
+        LessonsModule,
     ],
     controllers: [],
     providers: [PrismaService],

@@ -9,7 +9,12 @@ export class CoursesService {
 
     create(createCourseInput: CreateCourseInput) {
         return this.prisma.course.create({
-            data: createCourseInput,
+            data: {
+                name: createCourseInput.name,
+                form: createCourseInput.form,
+                startDate: this.addOneDay(createCourseInput.startDate),
+                endDate: this.addOneDay(createCourseInput.endDate),
+            },
         });
     }
 
@@ -26,6 +31,7 @@ export class CoursesService {
     }
 
     update(id: number, updateCourseInput: UpdateCourseInput) {
+        // TODO fix date
         return this.prisma.course.update({
             where: {
                 id: id,
@@ -40,5 +46,11 @@ export class CoursesService {
                 id: id,
             },
         });
+    }
+
+    private addOneDay(date) {
+        const tomorrow = new Date(date.getTime());
+        tomorrow.setDate(date.getDate() + 1);
+        return tomorrow;
     }
 }

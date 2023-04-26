@@ -1,15 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { LessonsService } from 'src/lessons/lessons.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSubjectInput } from './dto/create-subject.input';
 import { UpdateSubjectInput } from './dto/update-subject.input';
 
 @Injectable()
 export class SubjectsService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private lessonService: LessonsService) {}
 
-    create(createSubjectInput: CreateSubjectInput) {
-        // TODO
-        return 'This action adds a new subject';
+    async create(createSubjectInput: CreateSubjectInput) {
+        const newSubject = await this.prisma.subject.create({
+            data: createSubjectInput,
+        });
+
+        await this.lessonService.createLessons(
+            createSubjectInput.recurrence,
+            createSubjectInput.courseId,
+            newSubject.id,
+            createSubjectInput.teacherId
+        );
+
+        return newSubject;
     }
 
     findAll() {
@@ -46,8 +57,17 @@ export class SubjectsService {
         return `This action updates a #${id} subject`;
     }
 
-    remove(id: number) {
-        // TODO
-        return `This action removes a #${id} subject`;
+    async remove(id: number) {
+        await this.prisma.lesson.deleteMany({
+            where: {
+                subjectId: id,
+            },
+        });
+
+        return this.prisma.subject.delete({
+            where: {
+                id: id,
+            },
+        });
     }
 }

@@ -3,6 +3,8 @@ import { CoursesService } from 'src/courses/courses.service';
 import { Course } from 'src/courses/entities/course.entity';
 import { Group } from 'src/groups/entities/group.entity';
 import { GroupsService } from 'src/groups/groups.service';
+import { Lesson } from 'src/lessons/entities/lesson.entity';
+import { LessonsService } from 'src/lessons/lessons.service';
 import { Type } from 'src/types/entities/type.entity';
 import { TypesService } from 'src/types/types.service';
 import { User } from 'src/users/entities/user.entity';
@@ -16,10 +18,11 @@ import { SubjectsService } from './subjects.service';
 export class SubjectsResolver {
     constructor(
         private readonly subjectsService: SubjectsService,
-        private userService: UsersService,
+        private usersService: UsersService,
         private typesService: TypesService,
         private coursesService: CoursesService,
-        private groupsService: GroupsService
+        private groupsService: GroupsService,
+        private lessonsService: LessonsService
     ) {}
 
     @Mutation(() => Subject)
@@ -59,11 +62,16 @@ export class SubjectsResolver {
 
     @ResolveField(() => User)
     teacher(@Parent() subject: Subject) {
-        return this.userService.findOne(subject.teacherId);
+        return this.usersService.findOne(subject.teacherId);
     }
 
     @ResolveField(() => [Group])
     groups(@Parent() subject: Subject) {
         return this.groupsService.findBySubjectId(subject.id);
+    }
+
+    @ResolveField(() => [Lesson])
+    lessons(@Parent() subject: Subject) {
+        return this.lessonsService.findBySubjectId(subject.id);
     }
 }
