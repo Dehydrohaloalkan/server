@@ -30,13 +30,6 @@ type LoginResponse {
   user: LoginUserData!
 }
 
-type Group {
-  id: Int!
-  number: String!
-  form: Int!
-  students: [Student!]!
-}
-
 type Student {
   studentId: String!
   userId: String!
@@ -48,6 +41,11 @@ type Student {
   isLeader: Boolean!
   isMarking: Boolean!
   group: Group!
+}
+
+type Type {
+  id: Int!
+  name: String!
 }
 
 type Course {
@@ -63,9 +61,24 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Type {
+type Subject {
   id: Int!
-  name: String!
+  courseId: Int!
+  typeId: Int!
+  teacherId: String!
+  recurrence: String!
+  course: Course!
+  teacher: User!
+  type: Type!
+  groups: [Group!]!
+}
+
+type Group {
+  id: Int!
+  number: String!
+  form: Int!
+  students: [Student!]!
+  subjects: [Subject!]!
 }
 
 type Query {
@@ -73,14 +86,17 @@ type Query {
   group(id: Int!): Group!
   students: [Student!]!
   student(id: String!): Student!
+  studentByUser(id: String!): Student!
+  subjects: [Subject!]!
+  subject(id: Int!): Subject!
   users: [User!]!
   user(id: String!): User!
   roles: [Role!]!
   role(id: Int!): Role!
-  courses: [Course!]!
-  course(id: Int!): Course!
   types: [Type!]!
   type(id: Int!): Type!
+  courses: [Course!]!
+  course(id: Int!): Course!
 }
 
 type Mutation {
@@ -90,15 +106,18 @@ type Mutation {
   createStudent(createStudentInput: CreateStudentInput!): Student!
   updateStudent(updateStudentInput: UpdateStudentInput!): Student!
   removeStudent(id: String!): Student!
+  createSubject(createSubjectInput: CreateSubjectInput!): Subject!
+  updateSubject(updateSubjectInput: UpdateSubjectInput!): Subject!
+  removeSubject(id: Int!): Subject!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
-  login(loginUserInput: LoginUserInput!): LoginResponse!
-  logout: LoginUserData!
-  refresh: LoginResponse!
   createCourse(createCourseInput: CreateCourseInput!): Course!
   updateCourse(updateCourseInput: UpdateCourseInput!): Course!
   removeCourse(id: Int!): Course!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  logout: LoginUserData!
+  refresh: LoginResponse!
 }
 
 input CreateGroupInput {
@@ -135,6 +154,17 @@ input UpdateStudentInput {
   id: String!
 }
 
+input CreateSubjectInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSubjectInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input CreateUserInput {
   name: String!
   surname: String!
@@ -152,11 +182,6 @@ input UpdateUserInput {
   id: String!
 }
 
-input LoginUserInput {
-  email: String!
-  password: String!
-}
-
 input CreateCourseInput {
   name: String!
   startDate: DateTime!
@@ -170,4 +195,9 @@ input UpdateCourseInput {
   endDate: DateTime
   form: Int
   id: Int!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
 }

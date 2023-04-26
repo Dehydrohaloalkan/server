@@ -83,16 +83,16 @@ model student {
 }
 
 model subject {
-  id            Int             @id(map: "PK_subject") @default(autoincrement()) @map("s_id")
-  courseId      Int             @map("s_course_id")
-  recurrenceIon String          @map("s_recurrence_json") @db.NVarChar(Max)
-  teacherId     String          @map("s_teacher_id") @db.UniqueIdentifier
-  typeId        Int             @map("s_type_id") @db.TinyInt
-  lessons       lesson[]
-  course        course          @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_subject_course")
-  type          subject_type    @relation(fields: [typeId], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
-  teacher       user            @relation(fields: [teacherId], references: [id], onUpdate: NoAction, map: "FK_subject_user")
-  groups        subject_group[]
+  id         Int             @id(map: "PK_subject") @default(autoincrement()) @map("s_id")
+  courseId   Int             @map("s_course_id")
+  recurrence String          @map("s_recurrence_json") @db.NVarChar(Max)
+  teacherId  String          @map("s_teacher_id") @db.UniqueIdentifier
+  typeId     Int             @map("s_type_id") @db.TinyInt
+  lessons    lesson[]
+  course     course          @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_subject_course")
+  type       subject_type    @relation(fields: [typeId], references: [id], onUpdate: NoAction, map: "FK_subject_subject_type")
+  teacher    user            @relation(fields: [teacherId], references: [id], onUpdate: NoAction, map: "FK_subject_user")
+  groups     subject_group[]
 
   @@index([courseId], map: "IX_subject_course_id")
 }

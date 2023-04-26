@@ -28,9 +28,13 @@ export class StudentsResolver {
         return this.studentsService.findOne(id);
     }
 
+    @Query(() => Student, { name: 'studentByUser' })
+    findByUserId(@Args('id') id: string) {
+        return this.studentsService.findOneByUserId(id);
+    }
+
     @ResolveField(() => Group)
     group(@Parent() student: Student) {
-        console.log('first');
         return this.groupsService.findByStudentId(student.studentId);
     }
 

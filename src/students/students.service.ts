@@ -87,6 +87,21 @@ export class StudentsService {
             }));
     }
 
+    findOneByUserId(userId: string) {
+        return this.prisma.student
+            .findFirst({
+                where: {
+                    user: {
+                        id: userId,
+                    },
+                },
+                select: {
+                    id: true,
+                },
+            })
+            .then((student) => this.findOne(student.id));
+    }
+
     findByGroupId(groupId: number) {
         return this.prisma.group
             .findUnique({
@@ -163,26 +178,31 @@ export class StudentsService {
         };
     }
 
-    remove(id: string) {
-        return this.prisma.student
-            .delete({
-                where: {
-                    id: id,
-                },
-                include: {
-                    user: true,
-                },
-            })
-            .then((student) => ({
-                studentId: student.id,
-                userId: student.user.id,
-                name: student.user.name,
-                surname: student.user.surname,
-                patronymic: student.user.patronymic,
-                email: student.user.email,
-                subgroup: student.subgroup,
-                isLeader: student.isLeader,
-                isMarking: student.isMarking,
-            }));
+    async remove(id: string) {
+        const student = await this.prisma.student.delete({
+            where: {
+                id: id,
+            },
+            include: {
+                user: true,
+            },
+        });
+        const resultStudent = {
+            studentId: student.id,
+            userId: student.user.id,
+            name: student.user.name,
+            surname: student.user.surname,
+            patronymic: student.user.patronymic,
+            email: student.user.email,
+            subgroup: student.subgroup,
+            isLeader: student.isLeader,
+            isMarking: student.isMarking,
+        };
+        await this.prisma.user.delete({
+            where: {
+                id: resultStudent.userId,
+            },
+        });
+        return resultStudent;
     }
 }

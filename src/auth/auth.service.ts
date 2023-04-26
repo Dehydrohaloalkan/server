@@ -42,7 +42,7 @@ export class AuthService {
             name: user.name,
             surname: user.surname,
             patronymic: user.patronymic,
-            role: user.user_role.name,
+            role: user.userRole.name,
         });
 
         const rtHash = await this.generateHash(data.refreshToken);

@@ -37,6 +37,23 @@ export class GroupsService {
         });
     }
 
+    findBySubjectId(id: number) {
+        return this.prisma.subject_group
+            .findMany({
+                where: {
+                    subjectId: id,
+                },
+                include: {
+                    group: true,
+                },
+            })
+            .then((result) =>
+                result.map((subjectGroup) => ({
+                    ...subjectGroup.group,
+                }))
+            );
+    }
+
     update(id: number, updateGroupInput: UpdateGroupInput) {
         return this.prisma.group.update({
             where: {
