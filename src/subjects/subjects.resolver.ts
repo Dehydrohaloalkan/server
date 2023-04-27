@@ -46,6 +46,14 @@ export class SubjectsResolver {
     }
 
     @Mutation(() => Subject)
+    addGroup(
+        @Args('subjectId', { type: () => Int }) subjectId,
+        @Args('groupId', { type: () => Int }) groupId
+    ) {
+        return this.subjectsService.addGroup(subjectId, groupId);
+    }
+
+    @Mutation(() => Subject)
     removeSubject(@Args('id', { type: () => Int }) id: number) {
         return this.subjectsService.remove(id);
     }

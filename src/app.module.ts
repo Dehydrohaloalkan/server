@@ -13,6 +13,8 @@ import { TypesModule } from './types/types.module';
 import { StudentsModule } from './students/students.module';
 import { SubjectsModule } from './subjects/subjects.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { AbsencesModule } from './absences/absences.module';
 
 @Module({
     imports: [
@@ -36,6 +38,8 @@ import { LessonsModule } from './lessons/lessons.module';
         StudentsModule,
         SubjectsModule,
         LessonsModule,
+        ScheduleModule,
+        AbsencesModule,
     ],
     controllers: [],
     providers: [PrismaService],

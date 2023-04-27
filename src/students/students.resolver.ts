@@ -1,4 +1,6 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AbsencesService } from 'src/absences/absences.service';
+import { Absence } from 'src/absences/entities/absence.entity';
 import { Group } from 'src/groups/entities/group.entity';
 import { GroupsService } from '../groups/groups.service';
 import { CreateStudentInput } from './dto/create-student.input';
@@ -10,7 +12,8 @@ import { StudentsService } from './students.service';
 export class StudentsResolver {
     constructor(
         private readonly studentsService: StudentsService,
-        private groupsService: GroupsService
+        private groupsService: GroupsService,
+        private absencesService: AbsencesService
     ) {}
 
     @Mutation(() => Student)
@@ -33,11 +36,6 @@ export class StudentsResolver {
         return this.studentsService.findOneByUserId(id);
     }
 
-    @ResolveField(() => Group)
-    group(@Parent() student: Student) {
-        return this.groupsService.findByStudentId(student.studentId);
-    }
-
     @Mutation(() => Student)
     updateStudent(@Args('updateStudentInput') updateStudentInput: UpdateStudentInput) {
         return this.studentsService.update(updateStudentInput.id, updateStudentInput);
@@ -46,5 +44,15 @@ export class StudentsResolver {
     @Mutation(() => Student)
     removeStudent(@Args('id') id: string) {
         return this.studentsService.remove(id);
+    }
+
+    @ResolveField(() => Group)
+    group(@Parent() student: Student) {
+        return this.groupsService.findByStudentId(student.studentId);
+    }
+
+    @ResolveField(() => [Absence])
+    absences(@Parent() student: Student) {
+        return this.absencesService.findByStudentId(student.studentId);
     }
 }

@@ -71,6 +71,14 @@ export class LessonsService {
         }
     }
 
+    async removeBySubjectId(id: number) {
+        await this.prisma.lesson.deleteMany({
+            where: {
+                subjectId: id,
+            },
+        });
+    }
+
     private getDatesInRangeByWeekday(startDate: Date, endDate: Date, weekdayNumber: number) {
         const result = [];
         const weekdayNames = [
@@ -105,7 +113,7 @@ export class LessonsService {
             date.getFullYear(),
             date.getMonth(),
             date.getDate(),
-            Number.parseInt(hours) + 3,
+            Number.parseInt(hours),
             Number.parseInt(minutes)
         );
     }

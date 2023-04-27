@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Absence } from 'src/absences/entities/absence.entity';
 import { Group } from 'src/groups/entities/group.entity';
 
 @ObjectType()
@@ -32,4 +33,7 @@ export class Student {
 
     @Field(() => Group)
     group: Group;
+
+    @Field(() => [Absence])
+    absences: Absence[];
 }

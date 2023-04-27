@@ -1,11 +1,12 @@
 import { Module, forwardRef } from '@nestjs/common';
+import { ScheduleModule } from 'src/schedule/schedule.module';
 import { StudentsModule } from 'src/students/students.module';
 import { SubjectsModule } from 'src/subjects/subjects.module';
 import { GroupsResolver } from './groups.resolver';
 import { GroupsService } from './groups.service';
 
 @Module({
-    imports: [forwardRef(() => StudentsModule), forwardRef(() => SubjectsModule)],
+    imports: [forwardRef(() => StudentsModule), forwardRef(() => SubjectsModule), ScheduleModule],
     providers: [GroupsResolver, GroupsService],
     exports: [GroupsService],
 })

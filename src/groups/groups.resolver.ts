@@ -1,4 +1,6 @@
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { ScheduleService } from 'src/schedule/schedule.service';
 import { Student } from 'src/students/entities/student.entity';
 import { StudentsService } from 'src/students/students.service';
 import { Subject } from 'src/subjects/entities/subject.entity';
@@ -13,7 +15,8 @@ export class GroupsResolver {
     constructor(
         private readonly groupsService: GroupsService,
         private studentsService: StudentsService,
-        private subjectsService: SubjectsService
+        private subjectsService: SubjectsService,
+        private scheduleService: ScheduleService
     ) {}
 
     @Mutation(() => Group)
@@ -49,5 +52,10 @@ export class GroupsResolver {
     @ResolveField(() => [Subject])
     subjects(@Parent() group: Group) {
         return this.subjectsService.findByGroupId(group.id);
+    }
+
+    @ResolveField(() => Schedule)
+    schedule(@Parent() group: Group, @Args('week', { type: () => Int }) week: number) {
+        return this.scheduleService.getGroupSchedule(week, group.id);
     }
 }

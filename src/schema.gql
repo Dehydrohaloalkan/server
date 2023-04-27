@@ -30,28 +30,12 @@ type LoginResponse {
   user: LoginUserData!
 }
 
-type Student {
-  studentId: String!
-  userId: String!
+type Course {
+  id: Int!
   name: String!
-  surname: String!
-  patronymic: String
-  email: String!
-  subgroup: Boolean!
-  isLeader: Boolean!
-  isMarking: Boolean!
-  group: Group!
-}
-
-type Lesson {
-  id: String!
-  startTime: DateTime!
-  endTime: DateTime!
-  subjectId: Int!
-  location: String!
-  teacherId: String!
-  subject: Subject!
-  teacher: User!
+  startDate: DateTime!
+  endDate: DateTime!
+  form: Int!
 }
 
 """
@@ -62,14 +46,6 @@ scalar DateTime
 type Type {
   id: Int!
   name: String!
-}
-
-type Course {
-  id: Int!
-  name: String!
-  startDate: DateTime!
-  endDate: DateTime!
-  form: Int!
 }
 
 type Subject {
@@ -85,12 +61,53 @@ type Subject {
   lessons: [Lesson!]!
 }
 
+type Lesson {
+  id: String!
+  startTime: DateTime!
+  endTime: DateTime!
+  subjectId: Int!
+  location: String!
+  teacherId: String!
+  subject: Subject!
+  teacher: User!
+}
+
+type Schedule {
+  week: Int!
+  groupId: Int!
+  teacherId: String!
+  lessons: [Lesson!]!
+}
+
+type Absence {
+  studentId: String!
+  lessonId: String!
+  hours: Int!
+  student: Student!
+  lesson: Lesson!
+}
+
+type Student {
+  studentId: String!
+  userId: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  subgroup: Boolean!
+  isLeader: Boolean!
+  isMarking: Boolean!
+  group: Group!
+  absences: [Absence!]!
+}
+
 type Group {
   id: Int!
   number: String!
   form: Int!
   students: [Student!]!
   subjects: [Subject!]!
+  schedule(week: Int!): Schedule!
 }
 
 type Query {
@@ -111,6 +128,10 @@ type Query {
   course(id: Int!): Course!
   lessons: [Lesson!]!
   lesson(id: String!): Lesson!
+  groupSchedule(week: Int!, groupId: Int!): Schedule!
+  teacherSchedule(week: Int!, teacherId: String!): Schedule!
+  absences: [Absence!]!
+  absence(studentId: String!, lessonId: String!): Absence!
 }
 
 type Mutation {
@@ -122,6 +143,7 @@ type Mutation {
   removeStudent(id: String!): Student!
   createSubject(createSubjectInput: CreateSubjectInput!): Subject!
   updateSubject(updateSubjectInput: UpdateSubjectInput!): Subject!
+  addGroup(subjectId: Int!, groupId: Int!): Subject!
   removeSubject(id: Int!): Subject!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
@@ -129,6 +151,8 @@ type Mutation {
   createCourse(createCourseInput: CreateCourseInput!): Course!
   updateCourse(updateCourseInput: UpdateCourseInput!): Course!
   removeCourse(id: Int!): Course!
+  createAbsence(createAbsenceInput: CreateAbsenceInput!): Absence!
+  removeAbsence(studentId: String!, lessonId: String!): Absence!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   logout: LoginUserData!
   refresh: LoginResponse!
@@ -213,6 +237,11 @@ input UpdateCourseInput {
   endDate: DateTime
   form: Int
   id: Int!
+}
+
+input CreateAbsenceInput {
+  studentId: String!
+  lessonId: String!
 }
 
 input LoginUserInput {

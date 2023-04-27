@@ -52,17 +52,43 @@ export class SubjectsService {
             );
     }
 
-    update(id: number, updateSubjectInput: UpdateSubjectInput) {
-        // TODO
-        return `This action updates a #${id} subject`;
+    addGroup(subjectId: any, groupId: any) {
+        return this.prisma.subject_group
+            .create({
+                data: {
+                    subjectId: subjectId,
+                    groupId: groupId,
+                },
+                include: {
+                    subject: true,
+                },
+            })
+            .then((result) => result.subject);
+    }
+
+    // ! Not tested
+    async update(id: number, updateSubjectInput: UpdateSubjectInput) {
+        await this.lessonService.removeBySubjectId(id);
+
+        const updatedSubject = await this.prisma.subject.update({
+            where: {
+                id: id,
+            },
+            data: updateSubjectInput,
+        });
+
+        await this.lessonService.createLessons(
+            updatedSubject.recurrence,
+            updatedSubject.courseId,
+            updatedSubject.id,
+            updatedSubject.teacherId
+        );
+
+        return updatedSubject;
     }
 
     async remove(id: number) {
-        await this.prisma.lesson.deleteMany({
-            where: {
-                subjectId: id,
-            },
-        });
+        await this.lessonService.removeBySubjectId(id);
 
         return this.prisma.subject.delete({
             where: {
