@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Absence } from 'src/absences/entities/absence.entity';
+import { Grade } from 'src/grades/entities/grade.entity';
 import { Group } from 'src/groups/entities/group.entity';
 
 @ObjectType()
@@ -36,4 +37,7 @@ export class Student {
 
     @Field(() => [Absence])
     absences: Absence[];
+
+    @Field(() => [Grade])
+    grades: Absence[];
 }

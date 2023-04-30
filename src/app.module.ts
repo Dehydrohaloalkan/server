@@ -15,6 +15,7 @@ import { SubjectsModule } from './subjects/subjects.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { AbsencesModule } from './absences/absences.module';
+import { GradesModule } from './grades/grades.module';
 
 @Module({
     imports: [
@@ -40,6 +41,7 @@ import { AbsencesModule } from './absences/absences.module';
         LessonsModule,
         ScheduleModule,
         AbsencesModule,
+        GradesModule,
     ],
     controllers: [],
     providers: [PrismaService],

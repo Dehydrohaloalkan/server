@@ -87,6 +87,14 @@ type Absence {
   lesson: Lesson!
 }
 
+type Grade {
+  studentId: String!
+  lessonId: String!
+  value: Int!
+  student: Student!
+  lesson: Lesson!
+}
+
 type Student {
   studentId: String!
   userId: String!
@@ -99,6 +107,7 @@ type Student {
   isMarking: Boolean!
   group: Group!
   absences: [Absence!]!
+  grades: [Grade!]!
 }
 
 type Group {
@@ -116,12 +125,12 @@ type Query {
   students: [Student!]!
   student(id: String!): Student!
   studentByUser(id: String!): Student!
-  subjects: [Subject!]!
-  subject(id: Int!): Subject!
   users: [User!]!
   user(id: String!): User!
   roles: [Role!]!
   role(id: Int!): Role!
+  subjects: [Subject!]!
+  subject(id: Int!): Subject!
   types: [Type!]!
   type(id: Int!): Type!
   courses: [Course!]!
@@ -132,6 +141,8 @@ type Query {
   teacherSchedule(week: Int!, teacherId: String!): Schedule!
   absences: [Absence!]!
   absence(studentId: String!, lessonId: String!): Absence!
+  grades: [Grade!]!
+  grade(studentId: String!, lessonId: String!): Grade!
 }
 
 type Mutation {
@@ -141,18 +152,21 @@ type Mutation {
   createStudent(createStudentInput: CreateStudentInput!): Student!
   updateStudent(updateStudentInput: UpdateStudentInput!): Student!
   removeStudent(id: String!): Student!
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: String!): User!
   createSubject(createSubjectInput: CreateSubjectInput!): Subject!
   updateSubject(updateSubjectInput: UpdateSubjectInput!): Subject!
   addGroup(subjectId: Int!, groupId: Int!): Subject!
   removeSubject(id: Int!): Subject!
-  createUser(createUserInput: CreateUserInput!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
-  removeUser(id: String!): User!
   createCourse(createCourseInput: CreateCourseInput!): Course!
   updateCourse(updateCourseInput: UpdateCourseInput!): Course!
   removeCourse(id: Int!): Course!
   createAbsence(createAbsenceInput: CreateAbsenceInput!): Absence!
   removeAbsence(studentId: String!, lessonId: String!): Absence!
+  createGrade(createGradeInput: CreateGradeInput!): Grade!
+  updateGrade(updateGradeInput: UpdateGradeInput!): Grade!
+  removeGrade(studentId: String!, lessonId: String!): Grade!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   logout: LoginUserData!
   refresh: LoginResponse!
@@ -192,21 +206,6 @@ input UpdateStudentInput {
   id: String!
 }
 
-input CreateSubjectInput {
-  courseId: Int!
-  typeId: Int!
-  teacherId: String!
-  recurrence: String!
-}
-
-input UpdateSubjectInput {
-  courseId: Int
-  typeId: Int
-  teacherId: String
-  recurrence: String
-  id: Int!
-}
-
 input CreateUserInput {
   name: String!
   surname: String!
@@ -222,6 +221,21 @@ input UpdateUserInput {
   email: String
   roleId: Int
   id: String!
+}
+
+input CreateSubjectInput {
+  courseId: Int!
+  typeId: Int!
+  teacherId: String!
+  recurrence: String!
+}
+
+input UpdateSubjectInput {
+  courseId: Int
+  typeId: Int
+  teacherId: String
+  recurrence: String
+  id: Int!
 }
 
 input CreateCourseInput {
@@ -242,6 +256,18 @@ input UpdateCourseInput {
 input CreateAbsenceInput {
   studentId: String!
   lessonId: String!
+}
+
+input CreateGradeInput {
+  studentId: String!
+  lessonId: String!
+  value: Int!
+}
+
+input UpdateGradeInput {
+  studentId: String!
+  lessonId: String!
+  value: Int
 }
 
 input LoginUserInput {
