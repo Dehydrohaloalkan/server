@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ScheduleService } from 'src/schedule/schedule.service';
 import { CreateAbsenceInput } from './dto/create-absence.input';
 
 @Injectable()
 export class AbsencesService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService, private scheduleService: ScheduleService) {}
 
     async create(createAbsenceInput: CreateAbsenceInput) {
         const lesson = await this.prisma.lesson.findUnique({
@@ -44,6 +45,32 @@ export class AbsencesService {
         return this.prisma.absence.findMany({
             where: {
                 studentId: studentId,
+            },
+        });
+    }
+
+    getGroupAbsences(id: number, week: number) {
+        const { monday, sunday } = this.scheduleService.getMondayAndSundayForWeekOffset(week);
+
+        return this.prisma.absence.findMany({
+            where: {
+                AND: [
+                    {
+                        student: {
+                            group: {
+                                id: id,
+                            },
+                        },
+                    },
+                    {
+                        lesson: {
+                            startTime: {
+                                gte: monday,
+                                lte: sunday,
+                            },
+                        },
+                    },
+                ],
             },
         });
     }

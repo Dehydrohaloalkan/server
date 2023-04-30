@@ -54,7 +54,7 @@ export class ScheduleService {
         return [];
     }
 
-    private getMondayAndSundayForWeekOffset(offset: number): { monday: Date; sunday: Date } {
+    getMondayAndSundayForWeekOffset(offset: number): { monday: Date; sunday: Date } {
         const today = new Date();
         const monday = new Date(
             today.getFullYear(),

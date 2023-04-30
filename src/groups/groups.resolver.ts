@@ -9,6 +9,8 @@ import { CreateGroupInput } from './dto/create-group.input';
 import { UpdateGroupInput } from './dto/update-group.input';
 import { Group } from './entities/group.entity';
 import { GroupsService } from './groups.service';
+import { Absence } from 'src/absences/entities/absence.entity';
+import { AbsencesService } from 'src/absences/absences.service';
 
 @Resolver(() => Group)
 export class GroupsResolver {
@@ -16,7 +18,8 @@ export class GroupsResolver {
         private readonly groupsService: GroupsService,
         private studentsService: StudentsService,
         private subjectsService: SubjectsService,
-        private scheduleService: ScheduleService
+        private scheduleService: ScheduleService,
+        private absencesService: AbsencesService
     ) {}
 
     @Mutation(() => Group)
@@ -57,5 +60,10 @@ export class GroupsResolver {
     @ResolveField(() => Schedule)
     schedule(@Parent() group: Group, @Args('week', { type: () => Int }) week: number) {
         return this.scheduleService.getGroupSchedule(week, group.id);
+    }
+
+    @ResolveField(() => [Absence])
+    absences(@Parent() group: Group, @Args('week', { type: () => Int }) week: number) {
+        return this.absencesService.getGroupAbsences(group.id, week);
     }
 }

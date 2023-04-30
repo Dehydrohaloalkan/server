@@ -72,21 +72,6 @@ type Lesson {
   teacher: User!
 }
 
-type Schedule {
-  week: Int!
-  groupId: Int!
-  teacherId: String!
-  lessons: [Lesson!]!
-}
-
-type Absence {
-  studentId: String!
-  lessonId: String!
-  hours: Int!
-  student: Student!
-  lesson: Lesson!
-}
-
 type Grade {
   studentId: String!
   lessonId: String!
@@ -110,6 +95,21 @@ type Student {
   grades: [Grade!]!
 }
 
+type Absence {
+  studentId: String!
+  lessonId: String!
+  hours: Int!
+  student: Student!
+  lesson: Lesson!
+}
+
+type Schedule {
+  week: Int!
+  groupId: Int!
+  teacherId: String!
+  lessons: [Lesson!]!
+}
+
 type Group {
   id: Int!
   number: String!
@@ -117,14 +117,16 @@ type Group {
   students: [Student!]!
   subjects: [Subject!]!
   schedule(week: Int!): Schedule!
+  absences(week: Int!): [Absence!]!
 }
 
 type Query {
   groups: [Group!]!
   group(id: Int!): Group!
-  students: [Student!]!
-  student(id: String!): Student!
-  studentByUser(id: String!): Student!
+  groupSchedule(week: Int!, groupId: Int!): Schedule!
+  teacherSchedule(week: Int!, teacherId: String!): Schedule!
+  lessons: [Lesson!]!
+  lesson(id: String!): Lesson!
   users: [User!]!
   user(id: String!): User!
   roles: [Role!]!
@@ -135,12 +137,11 @@ type Query {
   type(id: Int!): Type!
   courses: [Course!]!
   course(id: Int!): Course!
-  lessons: [Lesson!]!
-  lesson(id: String!): Lesson!
-  groupSchedule(week: Int!, groupId: Int!): Schedule!
-  teacherSchedule(week: Int!, teacherId: String!): Schedule!
   absences: [Absence!]!
   absence(studentId: String!, lessonId: String!): Absence!
+  students: [Student!]!
+  student(id: String!): Student!
+  studentByUser(id: String!): Student!
   grades: [Grade!]!
   grade(studentId: String!, lessonId: String!): Grade!
 }
@@ -149,9 +150,6 @@ type Mutation {
   createGroup(createGroupInput: CreateGroupInput!): Group!
   updateGroup(updateGroupInput: UpdateGroupInput!): Group!
   removeGroup(id: Int!): Group!
-  createStudent(createStudentInput: CreateStudentInput!): Student!
-  updateStudent(updateStudentInput: UpdateStudentInput!): Student!
-  removeStudent(id: String!): Student!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
@@ -164,6 +162,9 @@ type Mutation {
   removeCourse(id: Int!): Course!
   createAbsence(createAbsenceInput: CreateAbsenceInput!): Absence!
   removeAbsence(studentId: String!, lessonId: String!): Absence!
+  createStudent(createStudentInput: CreateStudentInput!): Student!
+  updateStudent(updateStudentInput: UpdateStudentInput!): Student!
+  removeStudent(id: String!): Student!
   createGrade(createGradeInput: CreateGradeInput!): Grade!
   updateGrade(updateGradeInput: UpdateGradeInput!): Grade!
   removeGrade(studentId: String!, lessonId: String!): Grade!
@@ -181,29 +182,6 @@ input UpdateGroupInput {
   number: String
   form: Int
   id: Int!
-}
-
-input CreateStudentInput {
-  name: String!
-  surname: String!
-  patronymic: String
-  email: String!
-  groupId: Int!
-  subgroup: Boolean!
-  isLeader: Boolean!
-  isMarking: Boolean!
-}
-
-input UpdateStudentInput {
-  name: String
-  surname: String
-  patronymic: String
-  email: String
-  groupId: Int
-  subgroup: Boolean
-  isLeader: Boolean
-  isMarking: Boolean
-  id: String!
 }
 
 input CreateUserInput {
@@ -256,6 +234,29 @@ input UpdateCourseInput {
 input CreateAbsenceInput {
   studentId: String!
   lessonId: String!
+}
+
+input CreateStudentInput {
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  groupId: Int!
+  subgroup: Boolean!
+  isLeader: Boolean!
+  isMarking: Boolean!
+}
+
+input UpdateStudentInput {
+  name: String
+  surname: String
+  patronymic: String
+  email: String
+  groupId: Int
+  subgroup: Boolean
+  isLeader: Boolean
+  isMarking: Boolean
+  id: String!
 }
 
 input CreateGradeInput {
