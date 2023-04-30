@@ -7,29 +7,6 @@ type Role {
   name: String!
 }
 
-type User {
-  id: String!
-  name: String!
-  surname: String!
-  patronymic: String
-  email: String!
-  roleId: Int!
-  role: Role!
-}
-
-type LoginUserData {
-  id: String!
-  name: String!
-  surname: String!
-  patronymic: String
-  role: String!
-}
-
-type LoginResponse {
-  accessToken: String!
-  user: LoginUserData!
-}
-
 type Course {
   id: Int!
   name: String!
@@ -42,24 +19,6 @@ type Course {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type Type {
-  id: Int!
-  name: String!
-}
-
-type Subject {
-  id: Int!
-  courseId: Int!
-  typeId: Int!
-  teacherId: String!
-  recurrence: String!
-  course: Course!
-  teacher: User!
-  type: Type!
-  groups: [Group!]!
-  lessons: [Lesson!]!
-}
 
 type Lesson {
   id: String!
@@ -118,6 +77,48 @@ type Group {
   subjects: [Subject!]!
   schedule(week: Int!): Schedule!
   absences(week: Int!): [Absence!]!
+}
+
+type Type {
+  id: Int!
+  name: String!
+}
+
+type Subject {
+  id: Int!
+  courseId: Int!
+  typeId: Int!
+  teacherId: String!
+  recurrence: String!
+  course: Course!
+  teacher: User!
+  type: Type!
+  groups: [Group!]!
+  lessons: [Lesson!]!
+}
+
+type User {
+  id: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  email: String!
+  roleId: Int!
+  role: Role!
+  subjects: [Subject!]!
+}
+
+type LoginUserData {
+  id: String!
+  name: String!
+  surname: String!
+  patronymic: String
+  role: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: LoginUserData!
 }
 
 type Query {
@@ -256,7 +257,7 @@ input UpdateStudentInput {
   subgroup: Boolean
   isLeader: Boolean
   isMarking: Boolean
-  id: String!
+  studentId: String!
 }
 
 input CreateGradeInput {

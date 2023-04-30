@@ -5,7 +5,7 @@ import { LessonsResolver } from './lessons.resolver';
 import { LessonsService } from './lessons.service';
 
 @Module({
-    imports: [UsersModule, forwardRef(() => SubjectsModule)],
+    imports: [forwardRef(() => UsersModule), forwardRef(() => SubjectsModule)],
     providers: [LessonsResolver, LessonsService],
     exports: [LessonsService],
 })

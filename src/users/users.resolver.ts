@@ -1,5 +1,7 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Role } from 'src/roles/entities/role.entity';
+import { Subject } from 'src/subjects/entities/subject.entity';
+import { SubjectsService } from 'src/subjects/subjects.service';
 import { RolesService } from '../roles/roles.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -10,7 +12,8 @@ import { UsersService } from './users.service';
 export class UsersResolver {
     constructor(
         private readonly usersService: UsersService,
-        private readonly rolesService: RolesService
+        private readonly rolesService: RolesService,
+        private readonly subjectsService: SubjectsService
     ) {}
 
     @Mutation(() => User)
@@ -21,11 +24,6 @@ export class UsersResolver {
     @Query(() => [User], { name: 'users' })
     findAll() {
         return this.usersService.findAll();
-    }
-
-    @ResolveField(() => Role)
-    role(@Parent() user: User) {
-        return this.rolesService.findOne(user.roleId);
     }
 
     @Query(() => User, { name: 'user' })
@@ -41,5 +39,15 @@ export class UsersResolver {
     @Mutation(() => User)
     removeUser(@Args('id') id: string) {
         return this.usersService.remove(id);
+    }
+
+    @ResolveField(() => Role)
+    role(@Parent() user: User) {
+        return this.rolesService.findOne(user.roleId);
+    }
+
+    @ResolveField(() => [Subject])
+    subjects(@Parent() user: User) {
+        return this.subjectsService.findByTeacherId(user.id);
     }
 }

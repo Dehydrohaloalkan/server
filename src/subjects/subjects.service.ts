@@ -52,6 +52,14 @@ export class SubjectsService {
             );
     }
 
+    findByTeacherId(id: string) {
+        return this.prisma.subject.findMany({
+            where: {
+                teacherId: id,
+            },
+        });
+    }
+
     addGroup(subjectId: any, groupId: any) {
         return this.prisma.subject_group
             .create({

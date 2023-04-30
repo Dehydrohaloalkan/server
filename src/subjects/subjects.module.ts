@@ -9,9 +9,9 @@ import { SubjectsService } from './subjects.service';
 
 @Module({
     imports: [
-        UsersModule,
         TypesModule,
         CoursesModule,
+        forwardRef(() => UsersModule),
         forwardRef(() => LessonsModule),
         forwardRef(() => GroupsModule),
     ],

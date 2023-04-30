@@ -4,7 +4,7 @@ import { CreateStudentInput } from './create-student.input';
 @InputType()
 export class UpdateStudentInput extends PartialType(CreateStudentInput) {
     @Field()
-    id: string;
+    studentId: string;
 
     @Field({ nullable: true })
     name?: string;

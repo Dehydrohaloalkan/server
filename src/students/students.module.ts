@@ -8,7 +8,7 @@ import { StudentsService } from './students.service';
 
 @Module({
     imports: [
-        UsersModule,
+        forwardRef(() => UsersModule),
         forwardRef(() => GroupsModule),
         forwardRef(() => AbsencesModule),
         forwardRef(() => GradesModule),

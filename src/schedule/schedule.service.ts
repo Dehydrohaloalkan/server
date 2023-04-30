@@ -49,6 +49,21 @@ export class ScheduleService {
                 },
             });
         } else {
+            return await this.prisma.lesson.findMany({
+                where: {
+                    AND: [
+                        {
+                            startTime: {
+                                gte: monday,
+                                lte: sunday,
+                            },
+                        },
+                        {
+                            teacherId: schedule.teacherId,
+                        },
+                    ],
+                },
+            });
         }
 
         return [];
