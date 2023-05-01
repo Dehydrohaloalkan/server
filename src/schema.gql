@@ -49,6 +49,7 @@ type Student {
   subgroup: Boolean!
   isLeader: Boolean!
   isMarking: Boolean!
+  groupId: Int!
   group: Group!
   absences: [Absence!]!
   grades: [Grade!]!

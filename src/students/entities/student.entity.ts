@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Absence } from 'src/absences/entities/absence.entity';
 import { Grade } from 'src/grades/entities/grade.entity';
 import { Group } from 'src/groups/entities/group.entity';
@@ -31,6 +31,9 @@ export class Student {
 
     @Field(() => Boolean)
     isMarking: boolean;
+
+    @Field(() => Int)
+    groupId: number;
 
     @Field(() => Group)
     group: Group;

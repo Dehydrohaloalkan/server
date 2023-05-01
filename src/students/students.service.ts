@@ -39,6 +39,7 @@ export class StudentsService {
             subgroup: student.subgroup,
             isLeader: student.isLeader,
             isMarking: student.isMarking,
+            groupId: student.groupId,
         };
     }
 
@@ -60,6 +61,7 @@ export class StudentsService {
                     subgroup: student.subgroup,
                     isLeader: student.isLeader,
                     isMarking: student.isMarking,
+                    groupId: student.groupId,
                 }))
             );
     }
@@ -84,6 +86,7 @@ export class StudentsService {
                 subgroup: student.subgroup,
                 isLeader: student.isLeader,
                 isMarking: student.isMarking,
+                groupId: student.groupId,
             }));
     }
 
@@ -127,6 +130,7 @@ export class StudentsService {
                     subgroup: student.subgroup,
                     isLeader: student.isLeader,
                     isMarking: student.isMarking,
+                    groupId: student.groupId,
                 }))
             );
     }
@@ -175,6 +179,7 @@ export class StudentsService {
             subgroup: student.subgroup,
             isLeader: student.isLeader,
             isMarking: student.isMarking,
+            groupId: student.groupId,
         };
     }
 
@@ -197,6 +202,7 @@ export class StudentsService {
             subgroup: student.subgroup,
             isLeader: student.isLeader,
             isMarking: student.isMarking,
+            groupId: student.groupId,
         };
         await this.prisma.user.delete({
             where: {
