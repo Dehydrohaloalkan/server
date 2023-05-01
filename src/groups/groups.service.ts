@@ -59,7 +59,10 @@ export class GroupsService {
             where: {
                 id: id,
             },
-            data: updateGroupInput,
+            data: {
+                number: updateGroupInput.number,
+                form: updateGroupInput.form,
+            },
         });
     }
 
