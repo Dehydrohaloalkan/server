@@ -12,8 +12,8 @@ export class CoursesService {
             data: {
                 name: createCourseInput.name,
                 form: createCourseInput.form,
-                startDate: this.addOneDay(createCourseInput.startDate),
-                endDate: this.addOneDay(createCourseInput.endDate),
+                startDate: this.notAddOneDay(createCourseInput.startDate),
+                endDate: this.notAddOneDay(createCourseInput.endDate),
             },
         });
     }
@@ -31,12 +31,17 @@ export class CoursesService {
     }
 
     update(id: number, updateCourseInput: UpdateCourseInput) {
-        // TODO fix date
+        // TODO Add subject updates
         return this.prisma.course.update({
             where: {
                 id: id,
             },
-            data: updateCourseInput,
+            data: {
+                name: updateCourseInput.name,
+                startDate: this.notAddOneDay(updateCourseInput.startDate),
+                endDate: this.notAddOneDay(updateCourseInput.endDate),
+                form: updateCourseInput.form,
+            },
         });
     }
 
@@ -48,9 +53,9 @@ export class CoursesService {
         });
     }
 
-    private addOneDay(date) {
+    private notAddOneDay(date) {
         const tomorrow = new Date(date.getTime());
-        tomorrow.setDate(date.getDate() + 1);
+        tomorrow.setDate(date.getDate());
         return tomorrow;
     }
 }
