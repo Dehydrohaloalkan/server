@@ -89,7 +89,7 @@ export class GradesService {
             where: {
                 studentId_lessonId: {
                     studentId: updateGradeInput.studentId,
-                    lessonId: updateGradeInput.studentId,
+                    lessonId: updateGradeInput.lessonId,
                 },
             },
             data: {
@@ -107,5 +107,27 @@ export class GradesService {
                 },
             },
         });
+    }
+
+    async setGrade(studentId: string, lessonId: string, value: number) {
+        if (await this.findOne(studentId, lessonId)) {
+            if (value == -1) {
+                return this.remove(studentId, lessonId);
+            } else {
+                return this.update({
+                    studentId: studentId,
+                    lessonId: lessonId,
+                    value: value,
+                });
+            }
+        } else {
+            if (value != -1) {
+                return this.create({
+                    studentId: studentId,
+                    lessonId: lessonId,
+                    value: value,
+                });
+            }
+        }
     }
 }
