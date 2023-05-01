@@ -31,6 +31,16 @@ export class UsersResolver {
         return this.usersService.findOne(id);
     }
 
+    @Query(() => [User], { name: 'teachers' })
+    findTeachers() {
+        return this.usersService.findTeachers();
+    }
+
+    @Query(() => [User], { name: 'admins' })
+    findAdmins() {
+        return this.usersService.findAdmins();
+    }
+
     @Mutation(() => User)
     updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
         return this.usersService.update(updateUserInput.id, updateUserInput);

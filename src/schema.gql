@@ -136,6 +136,8 @@ type Query {
   lesson(id: String!): Lesson!
   users: [User!]!
   user(id: String!): User!
+  teachers: [User!]!
+  admins: [User!]!
   roles: [Role!]!
   role(id: Int!): Role!
   subjects: [Subject!]!

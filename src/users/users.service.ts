@@ -29,6 +29,22 @@ export class UsersService {
         });
     }
 
+    findTeachers() {
+        return this.prisma.user.findMany({
+            where: {
+                roleId: 2,
+            },
+        });
+    }
+
+    findAdmins() {
+        return this.prisma.user.findMany({
+            where: {
+                roleId: 3,
+            },
+        });
+    }
+
     findOneWithRole(id: string) {
         return this.prisma.user.findUnique({
             where: {
