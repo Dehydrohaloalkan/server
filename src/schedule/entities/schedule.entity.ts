@@ -6,11 +6,14 @@ export class Schedule {
     @Field(() => Int)
     week: number;
 
-    @Field(() => Int)
-    groupId: number;
+    @Field(() => Int, { nullable: true })
+    groupId?: number;
 
-    @Field()
-    teacherId: string;
+    @Field({ nullable: true })
+    teacherId?: string;
+
+    @Field(() => Int, { nullable: true })
+    subjectId?: number;
 
     @Field(() => [Lesson])
     lessons: Lesson[];

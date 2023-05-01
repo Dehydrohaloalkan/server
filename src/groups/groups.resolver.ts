@@ -1,4 +1,6 @@
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { AbsencesService } from 'src/absences/absences.service';
+import { Absence } from 'src/absences/entities/absence.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
 import { ScheduleService } from 'src/schedule/schedule.service';
 import { Student } from 'src/students/entities/student.entity';
@@ -9,8 +11,8 @@ import { CreateGroupInput } from './dto/create-group.input';
 import { UpdateGroupInput } from './dto/update-group.input';
 import { Group } from './entities/group.entity';
 import { GroupsService } from './groups.service';
-import { Absence } from 'src/absences/entities/absence.entity';
-import { AbsencesService } from 'src/absences/absences.service';
+import { GradesService } from 'src/grades/grades.service';
+import { Grade } from 'src/grades/entities/grade.entity';
 
 @Resolver(() => Group)
 export class GroupsResolver {
@@ -19,7 +21,8 @@ export class GroupsResolver {
         private studentsService: StudentsService,
         private subjectsService: SubjectsService,
         private scheduleService: ScheduleService,
-        private absencesService: AbsencesService
+        private absencesService: AbsencesService,
+        private gradesService: GradesService
     ) {}
 
     @Mutation(() => Group)
@@ -62,8 +65,40 @@ export class GroupsResolver {
         return this.scheduleService.getGroupSchedule(week, group.id);
     }
 
+    @ResolveField(() => Schedule)
+    subjectSchedule(
+        @Parent() group: Group,
+        @Args('week', { type: () => Int }) week: number,
+        @Args('subjectId', { type: () => Int }) subjectId: number
+    ) {
+        return this.scheduleService.getSubjectGroupSchedule(week, group.id, subjectId);
+    }
+
     @ResolveField(() => [Absence])
     absences(@Parent() group: Group, @Args('week', { type: () => Int }) week: number) {
         return this.absencesService.getGroupAbsences(group.id, week);
+    }
+
+    @ResolveField(() => [Absence])
+    subjectAbsences(
+        @Parent() group: Group,
+        @Args('week', { type: () => Int }) week: number,
+        @Args('subjectId', { type: () => Int }) subjectId: number
+    ) {
+        return this.absencesService.getSubjectGroupAbsences(group.id, week, subjectId);
+    }
+
+    @ResolveField(() => [Grade])
+    grades(@Parent() group: Group) {
+        return this.gradesService.getGroupGrades(group.id);
+    }
+
+    @ResolveField(() => [Grade])
+    subjectGrades(
+        @Parent() group: Group,
+        @Args('week', { type: () => Int }) week: number,
+        @Args('subjectId', { type: () => Int }) subjectId: number
+    ) {
+        return this.gradesService.getSubjectGroupGrades(group.id, week, subjectId);
     }
 }

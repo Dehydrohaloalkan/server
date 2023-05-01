@@ -75,6 +75,41 @@ export class AbsencesService {
         });
     }
 
+    getSubjectGroupAbsences(id: number, week: number, subjectId: number) {
+        const { monday, sunday } = this.scheduleService.getMondayAndSundayForWeekOffset(week);
+
+        return this.prisma.absence.findMany({
+            where: {
+                AND: [
+                    {
+                        student: {
+                            group: {
+                                id: id,
+                            },
+                        },
+                    },
+                    {
+                        lesson: {
+                            AND: [
+                                {
+                                    startTime: {
+                                        gte: monday,
+                                        lte: sunday,
+                                    },
+                                },
+                                {
+                                    subject: {
+                                        id: subjectId,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        });
+    }
+
     remove(studentId: string, lessonId) {
         return this.prisma.absence.delete({
             where: {

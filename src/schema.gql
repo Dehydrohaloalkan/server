@@ -64,8 +64,9 @@ type Absence {
 
 type Schedule {
   week: Int!
-  groupId: Int!
-  teacherId: String!
+  groupId: Int
+  teacherId: String
+  subjectId: Int
   lessons: [Lesson!]!
 }
 
@@ -76,7 +77,11 @@ type Group {
   students: [Student!]!
   subjects: [Subject!]!
   schedule(week: Int!): Schedule!
+  subjectSchedule(week: Int!, subjectId: Int!): Schedule!
   absences(week: Int!): [Absence!]!
+  subjectAbsences(week: Int!, subjectId: Int!): [Absence!]!
+  grades: [Grade!]!
+  subjectGrades(week: Int!, subjectId: Int!): [Grade!]!
 }
 
 type Type {

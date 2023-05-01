@@ -1,5 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { AbsencesModule } from 'src/absences/absences.module';
+import { GradesModule } from 'src/grades/grades.module';
 import { ScheduleModule } from 'src/schedule/schedule.module';
 import { StudentsModule } from 'src/students/students.module';
 import { SubjectsModule } from 'src/subjects/subjects.module';
@@ -10,6 +11,7 @@ import { GroupsService } from './groups.service';
     imports: [
         ScheduleModule,
         AbsencesModule,
+        GradesModule,
         forwardRef(() => StudentsModule),
         forwardRef(() => SubjectsModule),
     ],

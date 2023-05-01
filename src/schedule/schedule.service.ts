@@ -10,14 +10,20 @@ export class ScheduleService {
         return {
             week: week,
             teacherId: teacherId,
-            groupId: 0,
         };
     }
     getGroupSchedule(week: number, groupId: number) {
         return {
             week: week,
             groupId: groupId,
-            teacherId: '',
+        };
+    }
+
+    getSubjectGroupSchedule(week: number, groupId: number, subjectId: number) {
+        return {
+            week: week,
+            groupId: groupId,
+            subjectId: subjectId,
         };
     }
 
@@ -25,27 +31,37 @@ export class ScheduleService {
         const { monday, sunday } = this.getMondayAndSundayForWeekOffset(schedule.week);
 
         if (schedule.groupId) {
-            return await this.prisma.lesson.findMany({
-                where: {
-                    AND: [
-                        {
-                            subject: {
-                                groups: {
-                                    some: {
-                                        group: {
-                                            id: schedule.groupId,
-                                        },
-                                    },
+            const and: any = [
+                {
+                    subject: {
+                        groups: {
+                            some: {
+                                group: {
+                                    id: schedule.groupId,
                                 },
                             },
                         },
-                        {
-                            startTime: {
-                                gte: monday,
-                                lte: sunday,
-                            },
-                        },
-                    ],
+                    },
+                },
+                {
+                    startTime: {
+                        gte: monday,
+                        lte: sunday,
+                    },
+                },
+            ];
+
+            if (schedule.subjectId) {
+                and.push({
+                    subject: {
+                        id: schedule.subjectId,
+                    },
+                });
+            }
+
+            return await this.prisma.lesson.findMany({
+                where: {
+                    AND: and,
                 },
             });
         } else {
