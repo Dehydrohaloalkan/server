@@ -76,6 +76,9 @@ export class UsersService {
             data: {
                 password: passwordHash,
             },
+            include: {
+                userRole: true,
+            },
         });
     }
 
