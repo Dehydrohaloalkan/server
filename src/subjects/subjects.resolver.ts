@@ -30,6 +30,14 @@ export class SubjectsResolver {
         return this.subjectsService.create(createSubjectInput);
     }
 
+    @Mutation(() => Subject)
+    createSubjectWithGroups(
+        @Args('createSubjectInput') createSubjectInput: CreateSubjectInput,
+        @Args('groupIds', { type: () => [Int] }) groupIds: number[]
+    ) {
+        return this.subjectsService.createWithGroups(createSubjectInput, groupIds);
+    }
+
     @Query(() => [Subject], { name: 'subjects' })
     findAll() {
         return this.subjectsService.findAll();
@@ -43,6 +51,18 @@ export class SubjectsResolver {
     @Mutation(() => Subject)
     updateSubject(@Args('updateSubjectInput') updateSubjectInput: UpdateSubjectInput) {
         return this.subjectsService.update(updateSubjectInput.id, updateSubjectInput);
+    }
+
+    @Mutation(() => Subject)
+    updateSubjectWithGroups(
+        @Args('updateSubjectInput') updateSubjectInput: UpdateSubjectInput,
+        @Args('groupIds', { type: () => [Int] }) groupIds: number[]
+    ) {
+        return this.subjectsService.updateWithGroups(
+            updateSubjectInput.id,
+            updateSubjectInput,
+            groupIds
+        );
     }
 
     @Mutation(() => Subject)

@@ -23,6 +23,12 @@ export class SubjectsService {
         return newSubject;
     }
 
+    async createWithGroups(createSubjectInput: CreateSubjectInput, groupIds: number[]) {
+        const newSubject = await this.create(createSubjectInput);
+        groupIds.forEach((groupId) => this.addGroup(newSubject.id, groupId));
+        return newSubject;
+    }
+
     findAll() {
         return this.prisma.subject.findMany();
     }
@@ -60,7 +66,7 @@ export class SubjectsService {
         });
     }
 
-    addGroup(subjectId: any, groupId: any) {
+    addGroup(subjectId: number, groupId: number) {
         return this.prisma.subject_group
             .create({
                 data: {
@@ -82,7 +88,12 @@ export class SubjectsService {
             where: {
                 id: id,
             },
-            data: updateSubjectInput,
+            data: {
+                courseId: updateSubjectInput.courseId,
+                teacherId: updateSubjectInput.teacherId,
+                recurrence: updateSubjectInput.recurrence,
+                typeId: updateSubjectInput.typeId,
+            },
         });
 
         await this.lessonService.createLessons(
@@ -92,6 +103,17 @@ export class SubjectsService {
             updatedSubject.teacherId
         );
 
+        return updatedSubject;
+    }
+
+    async updateWithGroups(id: number, updateSubjectInput: UpdateSubjectInput, groupIds: number[]) {
+        await this.prisma.subject_group.deleteMany({
+            where: {
+                subjectId: id,
+            },
+        });
+        const updatedSubject = await this.update(id, updateSubjectInput);
+        groupIds.forEach((groupId) => this.addGroup(updatedSubject.id, groupId));
         return updatedSubject;
     }
 

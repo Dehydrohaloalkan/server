@@ -163,7 +163,9 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
   createSubject(createSubjectInput: CreateSubjectInput!): Subject!
+  createSubjectWithGroups(createSubjectInput: CreateSubjectInput!, groupIds: [Int!]!): Subject!
   updateSubject(updateSubjectInput: UpdateSubjectInput!): Subject!
+  updateSubjectWithGroups(updateSubjectInput: UpdateSubjectInput!, groupIds: [Int!]!): Subject!
   addGroup(subjectId: Int!, groupId: Int!): Subject!
   removeSubject(id: Int!): Subject!
   createCourse(createCourseInput: CreateCourseInput!): Course!
