@@ -110,7 +110,7 @@ export class AbsencesService {
         });
     }
 
-    remove(studentId: string, lessonId) {
+    remove(studentId: string, lessonId: string) {
         return this.prisma.absence.delete({
             where: {
                 studentId_lessonId: {

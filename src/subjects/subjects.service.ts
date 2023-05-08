@@ -80,7 +80,6 @@ export class SubjectsService {
             .then((result) => result.subject);
     }
 
-    // ! Not tested
     async update(id: number, updateSubjectInput: UpdateSubjectInput) {
         await this.lessonService.removeBySubjectId(id);
 
